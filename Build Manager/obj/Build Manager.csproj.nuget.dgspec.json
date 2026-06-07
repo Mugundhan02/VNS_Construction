@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Projects\\vns construction\\MyApp\\MyApp.csproj": {}
+    "D:\\Projects\\vns construction\\Build Manager\\Build Manager.csproj": {}
   },
   "projects": {
-    "D:\\Projects\\vns construction\\MyApp\\MyApp.csproj": {
+    "D:\\Projects\\vns construction\\Build Manager\\Build Manager.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Projects\\vns construction\\MyApp\\MyApp.csproj",
-        "projectName": "MyApp",
-        "projectPath": "D:\\Projects\\vns construction\\MyApp\\MyApp.csproj",
+        "projectUniqueName": "D:\\Projects\\vns construction\\Build Manager\\Build Manager.csproj",
+        "projectName": "Build Manager",
+        "projectPath": "D:\\Projects\\vns construction\\Build Manager\\Build Manager.csproj",
         "packagesPath": "C:\\Users\\akmug\\.nuget\\packages\\",
-        "outputPath": "D:\\Projects\\vns construction\\MyApp\\obj\\",
+        "outputPath": "D:\\Projects\\vns construction\\Build Manager\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
@@ -51,6 +51,12 @@
         "net8.0": {
           "framework": "net8.0",
           "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            }
+          },
           "imports": [
             "net461",
             "net462",

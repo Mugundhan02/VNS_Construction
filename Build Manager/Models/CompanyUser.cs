@@ -25,7 +25,8 @@ namespace BuildManager.Models
 
         public bool IsActive { get; set; } = true;
 
-        // Navigation property
+        // Navigation properties
         public Company Company { get; set; } = null!;
+        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

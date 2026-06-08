@@ -22,6 +22,9 @@ namespace BuildManager.Data
         /// <summary>Application users tied to a company with role-based access</summary>
         public DbSet<CompanyUser> CompanyUsers { get; set; }
 
+        /// <summary>Refresh tokens for session management</summary>
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+
         /// <summary>Company bank accounts</summary>
         public DbSet<CompanyBank> CompanyBanks { get; set; }
 
@@ -84,6 +87,19 @@ namespace BuildManager.Data
                 entity.Property(e => e.PanCardNumber).HasMaxLength(20);
                 entity.Property(e => e.TinNumber).HasMaxLength(30);
                 entity.Property(e => e.CstNumber).HasMaxLength(30);
+            });
+
+            // ── RefreshToken ──
+            modelBuilder.Entity<RefreshToken>(entity =>
+            {
+                entity.HasKey(e => e.RefreshTokenId);
+                entity.Property(e => e.Token).IsRequired();
+                entity.HasIndex(e => e.Token).IsUnique();
+
+                entity.HasOne(e => e.CompanyUser)
+                      .WithMany(u => u.RefreshTokens)
+                      .HasForeignKey(e => e.CompanyUserId)
+                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // ── CompanyUser ──

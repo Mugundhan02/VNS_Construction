@@ -1,0 +1,24 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Build Manager API",
+    "description": "Construction management REST API for VNS Construction",
+    "version": "v1"
+  },
+  "paths": { },
+  "components": {
+    "securitySchemes": {
+      "Bearer": {
+        "type": "apiKey",
+        "description": "Enter: Bearer {token}",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  },
+  "security": [
+    {
+      "Bearer": [ ]
+    }
+  ]
+}

@@ -2,31 +2,33 @@ namespace BuildManager.Models
 {
     /// <summary>
     /// Represents a user of the application linked to a company.
-    /// Corresponds to the "Company User Details" screen.
-    /// Roles: Owner, Admin, User.
+    /// Roles: Owner | Admin | User
     /// </summary>
     public class CompanyUser
     {
-        public int CompanyUserId { get; set; }
-
-        public int CompanyId { get; set; }
-
-        public string UserName { get; set; } = string.Empty;
+        public int    CompanyUserId { get; set; }
+        public int    CompanyId    { get; set; }
+        public string UserName     { get; set; } = string.Empty;
 
         /// <summary>
-        /// Hashed password — never store plain text.
+        /// HMAC-SHA512 hash of the password, stored as Base64.
+        /// Never store plain text.
         /// </summary>
         public string PasswordHash { get; set; } = string.Empty;
 
         /// <summary>
-        /// Role: Owner | Admin | User
+        /// Cryptographically random 64-byte salt used as the HMAC key.
+        /// Unique per user, stored as Base64.
         /// </summary>
+        public string PasswordSalt { get; set; } = string.Empty;
+
+        /// <summary>Role: Owner | Admin | User</summary>
         public string UserType { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
 
         // Navigation properties
-        public Company Company { get; set; } = null!;
+        public Company                   Company       { get; set; } = null!;
         public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

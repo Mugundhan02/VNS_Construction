@@ -12,32 +12,51 @@ namespace BuildManager.Services
     {
         private readonly BuildManagerDbContext _context;
         private readonly IMapper               _mapper;
+        private readonly IPasswordService      _passwordService;
 
-        public CompanyUserService(BuildManagerDbContext context, IMapper mapper)
+        public CompanyUserService(
+            BuildManagerDbContext context,
+            IMapper               mapper,
+            IPasswordService      passwordService)
         {
-            _context = context;
-            _mapper  = mapper;
+            _context         = context;
+            _mapper          = mapper;
+            _passwordService = passwordService;
         }
 
         public async Task<IEnumerable<CompanyUserResponseDto>> GetAll()
         {
-            var list = await _context.CompanyUsers.AsNoTracking()
-                .Include(u => u.Company).OrderBy(u => u.UserName).ToListAsync();
+            var list = await _context.CompanyUsers
+                .AsNoTracking()
+                .Include(u => u.Company)
+                .OrderBy(u => u.UserName)
+                .ToListAsync();
             return _mapper.Map<IEnumerable<CompanyUserResponseDto>>(list);
         }
 
         public async Task<CompanyUserResponseDto> GetById(int id)
         {
-            var entity = await _context.CompanyUsers.AsNoTracking()
-                .Include(u => u.Company).FirstOrDefaultAsync(u => u.CompanyUserId == id)
+            var entity = await _context.CompanyUsers
+                .AsNoTracking()
+                .Include(u => u.Company)
+                .FirstOrDefaultAsync(u => u.CompanyUserId == id)
                 ?? throw new EntityNotFoundException("CompanyUser", id);
             return _mapper.Map<CompanyUserResponseDto>(entity);
         }
 
         public async Task<CompanyUserResponseDto> Create(CompanyUserRequestDto dto)
         {
+            bool exists = await _context.CompanyUsers.AnyAsync(u => u.UserName == dto.UserName);
+            if (exists)
+                throw new DuplicateEntityException("User", "username", dto.UserName);
+
+            var salt = _passwordService.GenerateSalt();
+            var hash = _passwordService.HashPassword(dto.Password, salt);
+
             var entity = _mapper.Map<CompanyUser>(dto);
-            entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            entity.PasswordHash = Convert.ToBase64String(hash);
+            entity.PasswordSalt = Convert.ToBase64String(salt);
+
             _context.CompanyUsers.Add(entity);
             await _context.SaveChangesAsync();
             await _context.Entry(entity).Reference(u => u.Company).LoadAsync();
@@ -46,11 +65,19 @@ namespace BuildManager.Services
 
         public async Task<CompanyUserResponseDto> Update(int id, CompanyUserRequestDto dto)
         {
-            var entity = await _context.CompanyUsers.Include(u => u.Company)
+            var entity = await _context.CompanyUsers
+                .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.CompanyUserId == id)
                 ?? throw new EntityNotFoundException("CompanyUser", id);
+
+            // Re-hash with a fresh salt on every update
+            var salt = _passwordService.GenerateSalt();
+            var hash = _passwordService.HashPassword(dto.Password, salt);
+
             _mapper.Map(dto, entity);
-            entity.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            entity.PasswordHash = Convert.ToBase64String(hash);
+            entity.PasswordSalt = Convert.ToBase64String(salt);
+
             await _context.SaveChangesAsync();
             return _mapper.Map<CompanyUserResponseDto>(entity);
         }
@@ -58,7 +85,7 @@ namespace BuildManager.Services
         public async Task<bool> Delete(int id)
         {
             var entity = await _context.CompanyUsers.FindAsync(id)
-                         ?? throw new EntityNotFoundException("CompanyUser", id);
+                ?? throw new EntityNotFoundException("CompanyUser", id);
             _context.CompanyUsers.Remove(entity);
             await _context.SaveChangesAsync();
             return true;

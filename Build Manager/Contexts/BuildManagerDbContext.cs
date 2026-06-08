@@ -110,7 +110,8 @@ namespace BuildManager.Contexts
             {
                 entity.HasKey(e => e.CompanyUserId);
                 entity.Property(e => e.UserName).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.PasswordHash).IsRequired();    // Base64 HMAC-SHA512 hash (88 chars)
+                entity.Property(e => e.PasswordSalt).IsRequired();    // Base64 64-byte CSPRNG salt (88 chars)
                 entity.Property(e => e.UserType).IsRequired().HasMaxLength(20);
                 entity.HasIndex(e => e.UserName).IsUnique();
 

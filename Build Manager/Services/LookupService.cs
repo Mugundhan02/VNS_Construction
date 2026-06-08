@@ -1,11 +1,12 @@
 using AutoMapper;
-using BuildManager.Data;
+using BuildManager.Contexts;
 using BuildManager.DTOs;
+using BuildManager.Exceptions;
+using BuildManager.Interfaces;
 using BuildManager.Models;
-using BuildManager.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
-namespace BuildManager.Services.Implementations
+namespace BuildManager.Services
 {
     /// <summary>
     /// Handles all simple lookup masters:
@@ -24,7 +25,7 @@ namespace BuildManager.Services.Implementations
 
         // ── Payment Types ────────────────────────────────────────────────────
 
-        public async Task<IEnumerable<PaymentTypeResponseDto>> GetAllPaymentTypesAsync()
+        public async Task<IEnumerable<PaymentTypeResponseDto>> GetAllPaymentTypes()
         {
             var list = await _context.PaymentTypes
                 .AsNoTracking()
@@ -33,7 +34,7 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<IEnumerable<PaymentTypeResponseDto>>(list);
         }
 
-        public async Task<PaymentTypeResponseDto> CreatePaymentTypeAsync(PaymentTypeRequestDto dto)
+        public async Task<PaymentTypeResponseDto> CreatePaymentType(PaymentTypeRequestDto dto)
         {
             var entity = _mapper.Map<PaymentType>(dto);
             _context.PaymentTypes.Add(entity);
@@ -41,16 +42,16 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<PaymentTypeResponseDto>(entity);
         }
 
-        public async Task<PaymentTypeResponseDto?> UpdatePaymentTypeAsync(int id, PaymentTypeRequestDto dto)
+        public async Task<PaymentTypeResponseDto> UpdatePaymentType(int id, PaymentTypeRequestDto dto)
         {
-            var entity = await _context.PaymentTypes.FindAsync(id);
-            if (entity is null) return null;
+            var entity = await _context.PaymentTypes.FindAsync(id)
+                         ?? throw new EntityNotFoundException("PaymentType", id);
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<PaymentTypeResponseDto>(entity);
         }
 
-        public async Task<bool> DeletePaymentTypeAsync(int id)
+        public async Task<bool> DeletePaymentType(int id)
         {
             var entity = await _context.PaymentTypes.FindAsync(id);
             if (entity is null) return false;
@@ -61,7 +62,7 @@ namespace BuildManager.Services.Implementations
 
         // ── Whoms ────────────────────────────────────────────────────────────
 
-        public async Task<IEnumerable<WhomResponseDto>> GetAllWhomAsync()
+        public async Task<IEnumerable<WhomResponseDto>> GetAllWhom()
         {
             var list = await _context.Whoms
                 .AsNoTracking()
@@ -70,7 +71,7 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<IEnumerable<WhomResponseDto>>(list);
         }
 
-        public async Task<WhomResponseDto> CreateWhomAsync(WhomRequestDto dto)
+        public async Task<WhomResponseDto> CreateWhom(WhomRequestDto dto)
         {
             var entity = _mapper.Map<Whom>(dto);
             _context.Whoms.Add(entity);
@@ -78,16 +79,16 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<WhomResponseDto>(entity);
         }
 
-        public async Task<WhomResponseDto?> UpdateWhomAsync(int id, WhomRequestDto dto)
+        public async Task<WhomResponseDto> UpdateWhom(int id, WhomRequestDto dto)
         {
-            var entity = await _context.Whoms.FindAsync(id);
-            if (entity is null) return null;
+            var entity = await _context.Whoms.FindAsync(id)
+                         ?? throw new EntityNotFoundException("Whom", id);
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<WhomResponseDto>(entity);
         }
 
-        public async Task<bool> DeleteWhomAsync(int id)
+        public async Task<bool> DeleteWhom(int id)
         {
             var entity = await _context.Whoms.FindAsync(id);
             if (entity is null) return false;
@@ -98,7 +99,7 @@ namespace BuildManager.Services.Implementations
 
         // ── Office Expenses ──────────────────────────────────────────────────
 
-        public async Task<IEnumerable<OfficeExpenseResponseDto>> GetAllOfficeExpensesAsync()
+        public async Task<IEnumerable<OfficeExpenseResponseDto>> GetAllOfficeExpenses()
         {
             var list = await _context.OfficeExpenses
                 .AsNoTracking()
@@ -107,7 +108,7 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<IEnumerable<OfficeExpenseResponseDto>>(list);
         }
 
-        public async Task<OfficeExpenseResponseDto> CreateOfficeExpenseAsync(OfficeExpenseRequestDto dto)
+        public async Task<OfficeExpenseResponseDto> CreateOfficeExpense(OfficeExpenseRequestDto dto)
         {
             var entity = _mapper.Map<OfficeExpense>(dto);
             _context.OfficeExpenses.Add(entity);
@@ -115,16 +116,16 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<OfficeExpenseResponseDto>(entity);
         }
 
-        public async Task<OfficeExpenseResponseDto?> UpdateOfficeExpenseAsync(int id, OfficeExpenseRequestDto dto)
+        public async Task<OfficeExpenseResponseDto> UpdateOfficeExpense(int id, OfficeExpenseRequestDto dto)
         {
-            var entity = await _context.OfficeExpenses.FindAsync(id);
-            if (entity is null) return null;
+            var entity = await _context.OfficeExpenses.FindAsync(id)
+                         ?? throw new EntityNotFoundException("OfficeExpense", id);
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<OfficeExpenseResponseDto>(entity);
         }
 
-        public async Task<bool> DeleteOfficeExpenseAsync(int id)
+        public async Task<bool> DeleteOfficeExpense(int id)
         {
             var entity = await _context.OfficeExpenses.FindAsync(id);
             if (entity is null) return false;
@@ -135,7 +136,7 @@ namespace BuildManager.Services.Implementations
 
         // ── Company Banks ────────────────────────────────────────────────────
 
-        public async Task<IEnumerable<CompanyBankResponseDto>> GetBanksByCompanyAsync(int companyId)
+        public async Task<IEnumerable<CompanyBankResponseDto>> GetBanksByCompany(int companyId)
         {
             var list = await _context.CompanyBanks
                 .AsNoTracking()
@@ -145,7 +146,7 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<IEnumerable<CompanyBankResponseDto>>(list);
         }
 
-        public async Task<CompanyBankResponseDto> CreateCompanyBankAsync(CompanyBankRequestDto dto)
+        public async Task<CompanyBankResponseDto> CreateCompanyBank(CompanyBankRequestDto dto)
         {
             var entity = _mapper.Map<CompanyBank>(dto);
             _context.CompanyBanks.Add(entity);
@@ -153,16 +154,16 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<CompanyBankResponseDto>(entity);
         }
 
-        public async Task<CompanyBankResponseDto?> UpdateCompanyBankAsync(int id, CompanyBankRequestDto dto)
+        public async Task<CompanyBankResponseDto> UpdateCompanyBank(int id, CompanyBankRequestDto dto)
         {
-            var entity = await _context.CompanyBanks.FindAsync(id);
-            if (entity is null) return null;
+            var entity = await _context.CompanyBanks.FindAsync(id)
+                         ?? throw new EntityNotFoundException("CompanyBank", id);
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<CompanyBankResponseDto>(entity);
         }
 
-        public async Task<bool> DeleteCompanyBankAsync(int id)
+        public async Task<bool> DeleteCompanyBank(int id)
         {
             var entity = await _context.CompanyBanks.FindAsync(id);
             if (entity is null) return false;
@@ -173,7 +174,7 @@ namespace BuildManager.Services.Implementations
 
         // ── Installment Terms ────────────────────────────────────────────────
 
-        public async Task<IEnumerable<InstallmentTermResponseDto>> GetAllInstallmentTermsAsync()
+        public async Task<IEnumerable<InstallmentTermResponseDto>> GetAllInstallmentTerms()
         {
             var list = await _context.InstallmentTerms
                 .AsNoTracking()
@@ -182,7 +183,7 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<IEnumerable<InstallmentTermResponseDto>>(list);
         }
 
-        public async Task<InstallmentTermResponseDto> CreateInstallmentTermAsync(InstallmentTermRequestDto dto)
+        public async Task<InstallmentTermResponseDto> CreateInstallmentTerm(InstallmentTermRequestDto dto)
         {
             var entity = _mapper.Map<InstallmentTerm>(dto);
             _context.InstallmentTerms.Add(entity);
@@ -190,16 +191,16 @@ namespace BuildManager.Services.Implementations
             return _mapper.Map<InstallmentTermResponseDto>(entity);
         }
 
-        public async Task<InstallmentTermResponseDto?> UpdateInstallmentTermAsync(int id, InstallmentTermRequestDto dto)
+        public async Task<InstallmentTermResponseDto> UpdateInstallmentTerm(int id, InstallmentTermRequestDto dto)
         {
-            var entity = await _context.InstallmentTerms.FindAsync(id);
-            if (entity is null) return null;
+            var entity = await _context.InstallmentTerms.FindAsync(id)
+                         ?? throw new EntityNotFoundException("InstallmentTerm", id);
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<InstallmentTermResponseDto>(entity);
         }
 
-        public async Task<bool> DeleteInstallmentTermAsync(int id)
+        public async Task<bool> DeleteInstallmentTerm(int id)
         {
             var entity = await _context.InstallmentTerms.FindAsync(id);
             if (entity is null) return false;

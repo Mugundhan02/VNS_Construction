@@ -1,7 +1,7 @@
 using BuildManager.Models;
 using Microsoft.EntityFrameworkCore;
 
-namespace BuildManager.Data
+namespace BuildManager.Contexts
 {
     /// <summary>
     /// Entity Framework Core DbContext for the Build Manager application.
@@ -68,6 +68,9 @@ namespace BuildManager.Data
 
         /// <summary>Company office expense transactions</summary>
         public DbSet<CompanyExpenseTransaction> CompanyExpenseTransactions { get; set; }
+
+        /// <summary>Audit log for create/update/delete operations</summary>
+        public DbSet<AuditLog> AuditLogs { get; set; }
 
         // ── Model Configuration ───────────────────────────────────────────────
 
@@ -342,6 +345,15 @@ namespace BuildManager.Data
                       .WithMany()
                       .HasForeignKey(e => e.ToWhomId)
                       .OnDelete(DeleteBehavior.SetNull);
+            });
+
+            // ── AuditLog ──
+            modelBuilder.Entity<AuditLog>(entity =>
+            {
+                entity.HasKey(e => e.AuditLogId);
+                entity.Property(e => e.UserName).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.Action).IsRequired().HasMaxLength(100);
+                entity.Property(e => e.EntityType).IsRequired().HasMaxLength(100);
             });
         }
     }

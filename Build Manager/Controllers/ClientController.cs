@@ -1,74 +1,60 @@
 using BuildManager.DTOs;
-using BuildManager.Services.Interfaces;
+using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
 {
-    /// <summary>
-    /// Client (Person Details) — Masters menu.
-    /// Owner : full CRUD
-    /// Admin : read + create + update
-    /// User  : no access to masters
-    /// </summary>
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize(Roles = "Owner,Admin")]
     public class ClientController : ControllerBase
     {
-        private readonly IClientService _clientService;
+        private readonly IClientService   _clientService;
+        private readonly IAuditLogService _auditLog;
 
-        public ClientController(IClientService clientService)
+        public ClientController(IClientService clientService, IAuditLogService auditLog)
         {
             _clientService = clientService;
+            _auditLog      = auditLog;
         }
+
+        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string  GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<ClientResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
-            => Ok(await _clientService.GetAllAsync());
+        public async Task<ActionResult<IEnumerable<ClientResponseDto>>> GetAll()
+            => Ok(await _clientService.GetAll());
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(ClientResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _clientService.GetByIdAsync(id);
-            return result is null
-                ? NotFound(new { message = $"Client {id} not found." })
-                : Ok(result);
-        }
+        public async Task<ActionResult<ClientResponseDto>> GetById(int id)
+            => Ok(await _clientService.GetById(id));
 
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(ClientResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] ClientRequestDto dto)
+        public async Task<ActionResult<ClientResponseDto>> Create([FromBody] ClientRequestDto dto)
         {
-            var result = await _clientService.CreateAsync(dto);
+            var result = await _clientService.Create(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "Client", result.ClientId.ToString(), "Client created", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.ClientId }, result);
         }
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(ClientResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] ClientRequestDto dto)
+        public async Task<ActionResult<ClientResponseDto>> Update(int id, [FromBody] ClientRequestDto dto)
         {
-            var result = await _clientService.UpdateAsync(id, dto);
-            return result is null
-                ? NotFound(new { message = $"Client {id} not found." })
-                : Ok(result);
+            var result = await _clientService.Update(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "Client", id.ToString(), "Client updated", GetIp());
+            return Ok(result);
         }
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var deleted = await _clientService.DeleteAsync(id);
-            return deleted ? NoContent() : NotFound(new { message = $"Client {id} not found." });
+            await _clientService.Delete(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "Client", id.ToString(), "Client deleted", GetIp());
+            return NoContent();
         }
     }
 }

@@ -1,80 +1,59 @@
 using BuildManager.DTOs;
-using BuildManager.Services.Interfaces;
+using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
     public class MaterialController : ControllerBase
     {
         private readonly IMaterialService _materialService;
+        private readonly IAuditLogService _auditLog;
 
-        public MaterialController(IMaterialService materialService)
+        public MaterialController(IMaterialService materialService, IAuditLogService auditLog)
         {
             _materialService = materialService;
+            _auditLog        = auditLog;
         }
 
-        /// <summary>Get all materials.</summary>
+        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string  GetUser() => User.Identity?.Name ?? "unknown";
+
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<MaterialResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
-        {
-            var result = await _materialService.GetAllAsync();
-            return Ok(result);
-        }
+        public async Task<ActionResult<IEnumerable<MaterialResponseDto>>> GetAll()
+            => Ok(await _materialService.GetAll());
 
-        /// <summary>Get a material by ID.</summary>
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(MaterialResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _materialService.GetByIdAsync(id);
-            if (result is null)
-                return NotFound(new { message = $"Material {id} not found." });
+        public async Task<ActionResult<MaterialResponseDto>> GetById(int id)
+            => Ok(await _materialService.GetById(id));
 
-            return Ok(result);
-        }
-
-        /// <summary>Create a new material. (Owner, Admin)</summary>
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(MaterialResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] MaterialRequestDto dto)
+        public async Task<ActionResult<MaterialResponseDto>> Create([FromBody] MaterialRequestDto dto)
         {
-            var result = await _materialService.CreateAsync(dto);
+            var result = await _materialService.Create(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "Material", result.MaterialId.ToString(), "Material created", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.MaterialId }, result);
         }
 
-        /// <summary>Update a material. (Owner, Admin)</summary>
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(MaterialResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] MaterialRequestDto dto)
+        public async Task<ActionResult<MaterialResponseDto>> Update(int id, [FromBody] MaterialRequestDto dto)
         {
-            var result = await _materialService.UpdateAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"Material {id} not found." });
-
+            var result = await _materialService.Update(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "Material", id.ToString(), "Material updated", GetIp());
             return Ok(result);
         }
 
-        /// <summary>Delete a material. (Owner only)</summary>
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var deleted = await _materialService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"Material {id} not found." });
-
+            await _materialService.Delete(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "Material", id.ToString(), "Material deleted", GetIp());
             return NoContent();
         }
     }

@@ -1,319 +1,196 @@
 using BuildManager.DTOs;
-using BuildManager.Services.Interfaces;
+using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
+        private readonly IAuditLogService    _auditLog;
 
-        public TransactionController(ITransactionService transactionService)
+        public TransactionController(ITransactionService transactionService, IAuditLogService auditLog)
         {
             _transactionService = transactionService;
+            _auditLog           = auditLog;
         }
+
+        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string  GetUser() => User.Identity?.Name ?? "unknown";
 
         // ── Dashboard / Summary ───────────────────────────────────────────────
 
-        /// <summary>
-        /// Get company-level financial summary (total credits, debits, balance).
-        /// Mirrors the "New Transaction" overview screen.
-        /// </summary>
         [HttpGet("summary/company/{companyId:int}")]
-        [ProducesResponseType(typeof(CompanySummaryDto), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetCompanySummary(int companyId)
-            => Ok(await _transactionService.GetCompanySummaryAsync(companyId));
+        public async Task<ActionResult<CompanySummaryDto>> GetCompanySummary(int companyId)
+            => Ok(await _transactionService.GetCompanySummary(companyId));
 
-        /// <summary>
-        /// Get client-level financial summary including estimate vs actual.
-        /// </summary>
         [HttpGet("summary/client/{clientId:int}")]
-        [ProducesResponseType(typeof(ClientSummaryDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetClientSummary(int clientId)
-        {
-            var result = await _transactionService.GetClientSummaryAsync(clientId);
-            if (result is null)
-                return NotFound(new { message = $"Client {clientId} not found." });
+        public async Task<ActionResult<ClientSummaryDto>> GetClientSummary(int clientId)
+            => Ok(await _transactionService.GetClientSummary(clientId));
 
-            return Ok(result);
-        }
-
-        /// <summary>
-        /// Get supplier payable / paid / balance summary for a client.
-        /// </summary>
         [HttpGet("summary/client/{clientId:int}/suppliers")]
-        [ProducesResponseType(typeof(IEnumerable<SupplierSummaryDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSupplierSummary(int clientId)
-            => Ok(await _transactionService.GetSupplierSummaryByClientAsync(clientId));
+        public async Task<ActionResult<IEnumerable<SupplierSummaryDto>>> GetSupplierSummary(int clientId)
+            => Ok(await _transactionService.GetSupplierSummaryByClient(clientId));
 
-        /// <summary>
-        /// Get sub-contractor payable / paid / balance summary for a client.
-        /// </summary>
         [HttpGet("summary/client/{clientId:int}/subcontractors")]
-        [ProducesResponseType(typeof(IEnumerable<SubContractorSummaryDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSubContractorSummary(int clientId)
-            => Ok(await _transactionService.GetSubContractorSummaryByClientAsync(clientId));
+        public async Task<ActionResult<IEnumerable<SubContractorSummaryDto>>> GetSubContractorSummary(int clientId)
+            => Ok(await _transactionService.GetSubContractorSummaryByClient(clientId));
 
         // ── Client Transactions ───────────────────────────────────────────────
 
-        /// <summary>
-        /// Get client transactions. Optional filter by clientId.
-        /// </summary>
         [HttpGet("client")]
-        [ProducesResponseType(typeof(IEnumerable<ClientTransactionResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetClientTransactions([FromQuery] int? clientId = null)
-            => Ok(await _transactionService.GetClientTransactionsAsync(clientId));
+        public async Task<ActionResult<IEnumerable<ClientTransactionResponseDto>>> GetClientTransactions([FromQuery] int? clientId = null)
+            => Ok(await _transactionService.GetClientTransactions(clientId));
 
-        /// <summary>Get a single client transaction by ID.</summary>
         [HttpGet("client/{id:int}")]
-        [ProducesResponseType(typeof(ClientTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetClientTransactionById(int id)
-        {
-            var result = await _transactionService.GetClientTransactionByIdAsync(id);
-            if (result is null)
-                return NotFound(new { message = $"ClientTransaction {id} not found." });
+        public async Task<ActionResult<ClientTransactionResponseDto>> GetClientTransactionById(int id)
+            => Ok(await _transactionService.GetClientTransactionById(id));
 
-            return Ok(result);
-        }
-
-        /// <summary>Create a client transaction. (Owner, Admin)</summary>
         [HttpPost("client")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(ClientTransactionResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateClientTransaction([FromBody] ClientTransactionRequestDto dto)
+        public async Task<ActionResult<ClientTransactionResponseDto>> CreateClientTransaction([FromBody] ClientTransactionRequestDto dto)
         {
-            var result = await _transactionService.CreateClientTransactionAsync(dto);
-            return CreatedAtAction(nameof(GetClientTransactionById),
-                new { id = result.ClientTransactionId }, result);
+            var result = await _transactionService.CreateClientTransaction(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "ClientTransaction", result.ClientTransactionId.ToString(), "ClientTransaction created", GetIp());
+            return CreatedAtAction(nameof(GetClientTransactionById), new { id = result.ClientTransactionId }, result);
         }
 
-        /// <summary>Update a client transaction. (Owner, Admin)</summary>
         [HttpPut("client/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(ClientTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateClientTransaction(int id, [FromBody] ClientTransactionRequestDto dto)
+        public async Task<ActionResult<ClientTransactionResponseDto>> UpdateClientTransaction(int id, [FromBody] ClientTransactionRequestDto dto)
         {
-            var result = await _transactionService.UpdateClientTransactionAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"ClientTransaction {id} not found." });
-
+            var result = await _transactionService.UpdateClientTransaction(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "ClientTransaction", id.ToString(), "ClientTransaction updated", GetIp());
             return Ok(result);
         }
 
-        /// <summary>Delete a client transaction. (Owner only)</summary>
         [HttpDelete("client/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteClientTransaction(int id)
+        public async Task<ActionResult> DeleteClientTransaction(int id)
         {
-            var deleted = await _transactionService.DeleteClientTransactionAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"ClientTransaction {id} not found." });
-
+            await _transactionService.DeleteClientTransaction(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "ClientTransaction", id.ToString(), "ClientTransaction deleted", GetIp());
             return NoContent();
         }
 
         // ── Supplier Transactions ─────────────────────────────────────────────
 
-        /// <summary>
-        /// Get supplier transactions. Optional filter by clientId and/or supplierId.
-        /// </summary>
         [HttpGet("supplier")]
-        [ProducesResponseType(typeof(IEnumerable<SupplierTransactionResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSupplierTransactions(
+        public async Task<ActionResult<IEnumerable<SupplierTransactionResponseDto>>> GetSupplierTransactions(
             [FromQuery] int? clientId   = null,
             [FromQuery] int? supplierId = null)
-            => Ok(await _transactionService.GetSupplierTransactionsAsync(clientId, supplierId));
+            => Ok(await _transactionService.GetSupplierTransactions(clientId, supplierId));
 
-        /// <summary>Get a single supplier transaction by ID.</summary>
         [HttpGet("supplier/{id:int}")]
-        [ProducesResponseType(typeof(SupplierTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetSupplierTransactionById(int id)
-        {
-            var result = await _transactionService.GetSupplierTransactionByIdAsync(id);
-            if (result is null)
-                return NotFound(new { message = $"SupplierTransaction {id} not found." });
+        public async Task<ActionResult<SupplierTransactionResponseDto>> GetSupplierTransactionById(int id)
+            => Ok(await _transactionService.GetSupplierTransactionById(id));
 
-            return Ok(result);
-        }
-
-        /// <summary>Create a supplier transaction. (Owner, Admin)</summary>
         [HttpPost("supplier")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(SupplierTransactionResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateSupplierTransaction([FromBody] SupplierTransactionRequestDto dto)
+        public async Task<ActionResult<SupplierTransactionResponseDto>> CreateSupplierTransaction([FromBody] SupplierTransactionRequestDto dto)
         {
-            var result = await _transactionService.CreateSupplierTransactionAsync(dto);
-            return CreatedAtAction(nameof(GetSupplierTransactionById),
-                new { id = result.SupplierTransactionId }, result);
+            var result = await _transactionService.CreateSupplierTransaction(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "SupplierTransaction", result.SupplierTransactionId.ToString(), "SupplierTransaction created", GetIp());
+            return CreatedAtAction(nameof(GetSupplierTransactionById), new { id = result.SupplierTransactionId }, result);
         }
 
-        /// <summary>Update a supplier transaction. (Owner, Admin)</summary>
         [HttpPut("supplier/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(SupplierTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateSupplierTransaction(int id, [FromBody] SupplierTransactionRequestDto dto)
+        public async Task<ActionResult<SupplierTransactionResponseDto>> UpdateSupplierTransaction(int id, [FromBody] SupplierTransactionRequestDto dto)
         {
-            var result = await _transactionService.UpdateSupplierTransactionAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"SupplierTransaction {id} not found." });
-
+            var result = await _transactionService.UpdateSupplierTransaction(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "SupplierTransaction", id.ToString(), "SupplierTransaction updated", GetIp());
             return Ok(result);
         }
 
-        /// <summary>Delete a supplier transaction. (Owner only)</summary>
         [HttpDelete("supplier/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteSupplierTransaction(int id)
+        public async Task<ActionResult> DeleteSupplierTransaction(int id)
         {
-            var deleted = await _transactionService.DeleteSupplierTransactionAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"SupplierTransaction {id} not found." });
-
+            await _transactionService.DeleteSupplierTransaction(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "SupplierTransaction", id.ToString(), "SupplierTransaction deleted", GetIp());
             return NoContent();
         }
 
         // ── SubContractor Transactions ────────────────────────────────────────
 
-        /// <summary>
-        /// Get sub-contractor transactions. Optional filter by clientId and/or subContractorId.
-        /// </summary>
         [HttpGet("subcontractor")]
-        [ProducesResponseType(typeof(IEnumerable<SubContractorTransactionResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetSubContractorTransactions(
+        public async Task<ActionResult<IEnumerable<SubContractorTransactionResponseDto>>> GetSubContractorTransactions(
             [FromQuery] int? clientId        = null,
             [FromQuery] int? subContractorId = null)
-            => Ok(await _transactionService.GetSubContractorTransactionsAsync(clientId, subContractorId));
+            => Ok(await _transactionService.GetSubContractorTransactions(clientId, subContractorId));
 
-        /// <summary>Get a single sub-contractor transaction by ID.</summary>
         [HttpGet("subcontractor/{id:int}")]
-        [ProducesResponseType(typeof(SubContractorTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetSubContractorTransactionById(int id)
-        {
-            var result = await _transactionService.GetSubContractorTransactionByIdAsync(id);
-            if (result is null)
-                return NotFound(new { message = $"SubContractorTransaction {id} not found." });
+        public async Task<ActionResult<SubContractorTransactionResponseDto>> GetSubContractorTransactionById(int id)
+            => Ok(await _transactionService.GetSubContractorTransactionById(id));
 
-            return Ok(result);
-        }
-
-        /// <summary>Create a sub-contractor transaction. (Owner, Admin)</summary>
         [HttpPost("subcontractor")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(SubContractorTransactionResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateSubContractorTransaction([FromBody] SubContractorTransactionRequestDto dto)
+        public async Task<ActionResult<SubContractorTransactionResponseDto>> CreateSubContractorTransaction([FromBody] SubContractorTransactionRequestDto dto)
         {
-            var result = await _transactionService.CreateSubContractorTransactionAsync(dto);
-            return CreatedAtAction(nameof(GetSubContractorTransactionById),
-                new { id = result.SubContractorTransactionId }, result);
+            var result = await _transactionService.CreateSubContractorTransaction(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "SubContractorTransaction", result.SubContractorTransactionId.ToString(), "SubContractorTransaction created", GetIp());
+            return CreatedAtAction(nameof(GetSubContractorTransactionById), new { id = result.SubContractorTransactionId }, result);
         }
 
-        /// <summary>Update a sub-contractor transaction. (Owner, Admin)</summary>
         [HttpPut("subcontractor/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(SubContractorTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateSubContractorTransaction(int id, [FromBody] SubContractorTransactionRequestDto dto)
+        public async Task<ActionResult<SubContractorTransactionResponseDto>> UpdateSubContractorTransaction(int id, [FromBody] SubContractorTransactionRequestDto dto)
         {
-            var result = await _transactionService.UpdateSubContractorTransactionAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"SubContractorTransaction {id} not found." });
-
+            var result = await _transactionService.UpdateSubContractorTransaction(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "SubContractorTransaction", id.ToString(), "SubContractorTransaction updated", GetIp());
             return Ok(result);
         }
 
-        /// <summary>Delete a sub-contractor transaction. (Owner only)</summary>
         [HttpDelete("subcontractor/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteSubContractorTransaction(int id)
+        public async Task<ActionResult> DeleteSubContractorTransaction(int id)
         {
-            var deleted = await _transactionService.DeleteSubContractorTransactionAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"SubContractorTransaction {id} not found." });
-
+            await _transactionService.DeleteSubContractorTransaction(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "SubContractorTransaction", id.ToString(), "SubContractorTransaction deleted", GetIp());
             return NoContent();
         }
 
         // ── Company Expense Transactions ──────────────────────────────────────
 
-        /// <summary>
-        /// Get company expense transactions. Optional filter by companyId and/or clientId.
-        /// </summary>
         [HttpGet("expense")]
-        [ProducesResponseType(typeof(IEnumerable<CompanyExpenseTransactionResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetExpenseTransactions(
+        public async Task<ActionResult<IEnumerable<CompanyExpenseTransactionResponseDto>>> GetExpenseTransactions(
             [FromQuery] int? companyId = null,
             [FromQuery] int? clientId  = null)
-            => Ok(await _transactionService.GetCompanyExpenseTransactionsAsync(companyId, clientId));
+            => Ok(await _transactionService.GetCompanyExpenseTransactions(companyId, clientId));
 
-        /// <summary>Get a single company expense transaction by ID.</summary>
         [HttpGet("expense/{id:int}")]
-        [ProducesResponseType(typeof(CompanyExpenseTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetExpenseTransactionById(int id)
-        {
-            var result = await _transactionService.GetCompanyExpenseTransactionByIdAsync(id);
-            if (result is null)
-                return NotFound(new { message = $"ExpenseTransaction {id} not found." });
+        public async Task<ActionResult<CompanyExpenseTransactionResponseDto>> GetExpenseTransactionById(int id)
+            => Ok(await _transactionService.GetCompanyExpenseTransactionById(id));
 
-            return Ok(result);
-        }
-
-        /// <summary>Create a company expense transaction. (Owner, Admin)</summary>
         [HttpPost("expense")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(CompanyExpenseTransactionResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateExpenseTransaction([FromBody] CompanyExpenseTransactionRequestDto dto)
+        public async Task<ActionResult<CompanyExpenseTransactionResponseDto>> CreateExpenseTransaction([FromBody] CompanyExpenseTransactionRequestDto dto)
         {
-            var result = await _transactionService.CreateCompanyExpenseTransactionAsync(dto);
-            return CreatedAtAction(nameof(GetExpenseTransactionById),
-                new { id = result.CompanyExpenseTransactionId }, result);
+            var result = await _transactionService.CreateCompanyExpenseTransaction(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "CompanyExpenseTransaction", result.CompanyExpenseTransactionId.ToString(), "ExpenseTransaction created", GetIp());
+            return CreatedAtAction(nameof(GetExpenseTransactionById), new { id = result.CompanyExpenseTransactionId }, result);
         }
 
-        /// <summary>Update a company expense transaction. (Owner, Admin)</summary>
         [HttpPut("expense/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(CompanyExpenseTransactionResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateExpenseTransaction(int id, [FromBody] CompanyExpenseTransactionRequestDto dto)
+        public async Task<ActionResult<CompanyExpenseTransactionResponseDto>> UpdateExpenseTransaction(int id, [FromBody] CompanyExpenseTransactionRequestDto dto)
         {
-            var result = await _transactionService.UpdateCompanyExpenseTransactionAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"ExpenseTransaction {id} not found." });
-
+            var result = await _transactionService.UpdateCompanyExpenseTransaction(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "CompanyExpenseTransaction", id.ToString(), "ExpenseTransaction updated", GetIp());
             return Ok(result);
         }
 
-        /// <summary>Delete a company expense transaction. (Owner only)</summary>
         [HttpDelete("expense/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteExpenseTransaction(int id)
+        public async Task<ActionResult> DeleteExpenseTransaction(int id)
         {
-            var deleted = await _transactionService.DeleteCompanyExpenseTransactionAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"ExpenseTransaction {id} not found." });
-
+            await _transactionService.DeleteCompanyExpenseTransaction(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "CompanyExpenseTransaction", id.ToString(), "ExpenseTransaction deleted", GetIp());
             return NoContent();
         }
     }

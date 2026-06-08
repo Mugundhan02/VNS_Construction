@@ -1,233 +1,189 @@
 using BuildManager.DTOs;
-using BuildManager.Services.Interfaces;
+using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
 {
-    /// <summary>
-    /// Handles all lookup master data:
-    /// Payment Types, Whom, Office Expenses, Company Banks, Installment Terms.
-    /// </summary>
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
     public class LookupController : ControllerBase
     {
-        private readonly ILookupService _lookupService;
+        private readonly ILookupService   _lookupService;
+        private readonly IAuditLogService _auditLog;
 
-        public LookupController(ILookupService lookupService)
+        public LookupController(ILookupService lookupService, IAuditLogService auditLog)
         {
             _lookupService = lookupService;
+            _auditLog      = auditLog;
         }
+
+        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string  GetUser() => User.Identity?.Name ?? "unknown";
 
         // ── Payment Types ─────────────────────────────────────────────────────
 
         [HttpGet("payment-types")]
-        [ProducesResponseType(typeof(IEnumerable<PaymentTypeResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetPaymentTypes()
-            => Ok(await _lookupService.GetAllPaymentTypesAsync());
+        public async Task<ActionResult<IEnumerable<PaymentTypeResponseDto>>> GetPaymentTypes()
+            => Ok(await _lookupService.GetAllPaymentTypes());
 
         [HttpPost("payment-types")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(PaymentTypeResponseDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreatePaymentType([FromBody] PaymentTypeRequestDto dto)
+        public async Task<ActionResult<PaymentTypeResponseDto>> CreatePaymentType([FromBody] PaymentTypeRequestDto dto)
         {
-            var result = await _lookupService.CreatePaymentTypeAsync(dto);
+            var result = await _lookupService.CreatePaymentType(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "PaymentType", result.PaymentTypeId.ToString(), "PaymentType created", GetIp());
             return Created(string.Empty, result);
         }
 
         [HttpPut("payment-types/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(PaymentTypeResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdatePaymentType(int id, [FromBody] PaymentTypeRequestDto dto)
+        public async Task<ActionResult<PaymentTypeResponseDto>> UpdatePaymentType(int id, [FromBody] PaymentTypeRequestDto dto)
         {
-            var result = await _lookupService.UpdatePaymentTypeAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"PaymentType {id} not found." });
-
+            var result = await _lookupService.UpdatePaymentType(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "PaymentType", id.ToString(), "PaymentType updated", GetIp());
             return Ok(result);
         }
 
         [HttpDelete("payment-types/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeletePaymentType(int id)
+        public async Task<ActionResult> DeletePaymentType(int id)
         {
-            var deleted = await _lookupService.DeletePaymentTypeAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"PaymentType {id} not found." });
-
+            await _lookupService.DeletePaymentType(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "PaymentType", id.ToString(), "PaymentType deleted", GetIp());
             return NoContent();
         }
 
         // ── Whom ──────────────────────────────────────────────────────────────
 
         [HttpGet("whoms")]
-        [ProducesResponseType(typeof(IEnumerable<WhomResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetWhoms()
-            => Ok(await _lookupService.GetAllWhomAsync());
+        public async Task<ActionResult<IEnumerable<WhomResponseDto>>> GetWhoms()
+            => Ok(await _lookupService.GetAllWhom());
 
         [HttpPost("whoms")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(WhomResponseDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateWhom([FromBody] WhomRequestDto dto)
+        public async Task<ActionResult<WhomResponseDto>> CreateWhom([FromBody] WhomRequestDto dto)
         {
-            var result = await _lookupService.CreateWhomAsync(dto);
+            var result = await _lookupService.CreateWhom(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "Whom", result.WhomId.ToString(), "Whom created", GetIp());
             return Created(string.Empty, result);
         }
 
         [HttpPut("whoms/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(WhomResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateWhom(int id, [FromBody] WhomRequestDto dto)
+        public async Task<ActionResult<WhomResponseDto>> UpdateWhom(int id, [FromBody] WhomRequestDto dto)
         {
-            var result = await _lookupService.UpdateWhomAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"Whom {id} not found." });
-
+            var result = await _lookupService.UpdateWhom(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "Whom", id.ToString(), "Whom updated", GetIp());
             return Ok(result);
         }
 
         [HttpDelete("whoms/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteWhom(int id)
+        public async Task<ActionResult> DeleteWhom(int id)
         {
-            var deleted = await _lookupService.DeleteWhomAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"Whom {id} not found." });
-
+            await _lookupService.DeleteWhom(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "Whom", id.ToString(), "Whom deleted", GetIp());
             return NoContent();
         }
 
         // ── Office Expenses ───────────────────────────────────────────────────
 
         [HttpGet("office-expenses")]
-        [ProducesResponseType(typeof(IEnumerable<OfficeExpenseResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetOfficeExpenses()
-            => Ok(await _lookupService.GetAllOfficeExpensesAsync());
+        public async Task<ActionResult<IEnumerable<OfficeExpenseResponseDto>>> GetOfficeExpenses()
+            => Ok(await _lookupService.GetAllOfficeExpenses());
 
         [HttpPost("office-expenses")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(OfficeExpenseResponseDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateOfficeExpense([FromBody] OfficeExpenseRequestDto dto)
+        public async Task<ActionResult<OfficeExpenseResponseDto>> CreateOfficeExpense([FromBody] OfficeExpenseRequestDto dto)
         {
-            var result = await _lookupService.CreateOfficeExpenseAsync(dto);
+            var result = await _lookupService.CreateOfficeExpense(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "OfficeExpense", result.OfficeExpenseId.ToString(), "OfficeExpense created", GetIp());
             return Created(string.Empty, result);
         }
 
         [HttpPut("office-expenses/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(OfficeExpenseResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateOfficeExpense(int id, [FromBody] OfficeExpenseRequestDto dto)
+        public async Task<ActionResult<OfficeExpenseResponseDto>> UpdateOfficeExpense(int id, [FromBody] OfficeExpenseRequestDto dto)
         {
-            var result = await _lookupService.UpdateOfficeExpenseAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"OfficeExpense {id} not found." });
-
+            var result = await _lookupService.UpdateOfficeExpense(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "OfficeExpense", id.ToString(), "OfficeExpense updated", GetIp());
             return Ok(result);
         }
 
         [HttpDelete("office-expenses/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteOfficeExpense(int id)
+        public async Task<ActionResult> DeleteOfficeExpense(int id)
         {
-            var deleted = await _lookupService.DeleteOfficeExpenseAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"OfficeExpense {id} not found." });
-
+            await _lookupService.DeleteOfficeExpense(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "OfficeExpense", id.ToString(), "OfficeExpense deleted", GetIp());
             return NoContent();
         }
 
         // ── Company Banks ─────────────────────────────────────────────────────
 
         [HttpGet("banks/company/{companyId:int}")]
-        [ProducesResponseType(typeof(IEnumerable<CompanyBankResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetBanksByCompany(int companyId)
-            => Ok(await _lookupService.GetBanksByCompanyAsync(companyId));
+        public async Task<ActionResult<IEnumerable<CompanyBankResponseDto>>> GetBanksByCompany(int companyId)
+            => Ok(await _lookupService.GetBanksByCompany(companyId));
 
         [HttpPost("banks")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(typeof(CompanyBankResponseDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateBank([FromBody] CompanyBankRequestDto dto)
+        public async Task<ActionResult<CompanyBankResponseDto>> CreateBank([FromBody] CompanyBankRequestDto dto)
         {
-            var result = await _lookupService.CreateCompanyBankAsync(dto);
+            var result = await _lookupService.CreateCompanyBank(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "CompanyBank", result.CompanyBankId.ToString(), "CompanyBank created", GetIp());
             return Created(string.Empty, result);
         }
 
         [HttpPut("banks/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(typeof(CompanyBankResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateBank(int id, [FromBody] CompanyBankRequestDto dto)
+        public async Task<ActionResult<CompanyBankResponseDto>> UpdateBank(int id, [FromBody] CompanyBankRequestDto dto)
         {
-            var result = await _lookupService.UpdateCompanyBankAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"CompanyBank {id} not found." });
-
+            var result = await _lookupService.UpdateCompanyBank(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "CompanyBank", id.ToString(), "CompanyBank updated", GetIp());
             return Ok(result);
         }
 
         [HttpDelete("banks/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteBank(int id)
+        public async Task<ActionResult> DeleteBank(int id)
         {
-            var deleted = await _lookupService.DeleteCompanyBankAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"CompanyBank {id} not found." });
-
+            await _lookupService.DeleteCompanyBank(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "CompanyBank", id.ToString(), "CompanyBank deleted", GetIp());
             return NoContent();
         }
 
         // ── Installment Terms ─────────────────────────────────────────────────
 
         [HttpGet("installment-terms")]
-        [ProducesResponseType(typeof(IEnumerable<InstallmentTermResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetInstallmentTerms()
-            => Ok(await _lookupService.GetAllInstallmentTermsAsync());
+        public async Task<ActionResult<IEnumerable<InstallmentTermResponseDto>>> GetInstallmentTerms()
+            => Ok(await _lookupService.GetAllInstallmentTerms());
 
         [HttpPost("installment-terms")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(InstallmentTermResponseDto), StatusCodes.Status201Created)]
-        public async Task<IActionResult> CreateInstallmentTerm([FromBody] InstallmentTermRequestDto dto)
+        public async Task<ActionResult<InstallmentTermResponseDto>> CreateInstallmentTerm([FromBody] InstallmentTermRequestDto dto)
         {
-            var result = await _lookupService.CreateInstallmentTermAsync(dto);
+            var result = await _lookupService.CreateInstallmentTerm(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "InstallmentTerm", result.InstallmentTermId.ToString(), "InstallmentTerm created", GetIp());
             return Created(string.Empty, result);
         }
 
         [HttpPut("installment-terms/{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(InstallmentTermResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> UpdateInstallmentTerm(int id, [FromBody] InstallmentTermRequestDto dto)
+        public async Task<ActionResult<InstallmentTermResponseDto>> UpdateInstallmentTerm(int id, [FromBody] InstallmentTermRequestDto dto)
         {
-            var result = await _lookupService.UpdateInstallmentTermAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"InstallmentTerm {id} not found." });
-
+            var result = await _lookupService.UpdateInstallmentTerm(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "InstallmentTerm", id.ToString(), "InstallmentTerm updated", GetIp());
             return Ok(result);
         }
 
         [HttpDelete("installment-terms/{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> DeleteInstallmentTerm(int id)
+        public async Task<ActionResult> DeleteInstallmentTerm(int id)
         {
-            var deleted = await _lookupService.DeleteInstallmentTermAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"InstallmentTerm {id} not found." });
-
+            await _lookupService.DeleteInstallmentTerm(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "InstallmentTerm", id.ToString(), "InstallmentTerm deleted", GetIp());
             return NoContent();
         }
     }

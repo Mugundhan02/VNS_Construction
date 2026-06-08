@@ -1,74 +1,60 @@
 using BuildManager.DTOs;
-using BuildManager.Services.Interfaces;
+using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
 {
-    /// <summary>
-    /// SubContractor (Person Details) — Masters menu.
-    /// Owner : full CRUD
-    /// Admin : read + create + update
-    /// User  : no access to masters
-    /// </summary>
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize(Roles = "Owner,Admin")]
     public class SubContractorController : ControllerBase
     {
         private readonly ISubContractorService _subContractorService;
+        private readonly IAuditLogService      _auditLog;
 
-        public SubContractorController(ISubContractorService subContractorService)
+        public SubContractorController(ISubContractorService subContractorService, IAuditLogService auditLog)
         {
             _subContractorService = subContractorService;
+            _auditLog             = auditLog;
         }
+
+        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string  GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<SubContractorResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
-            => Ok(await _subContractorService.GetAllAsync());
+        public async Task<ActionResult<IEnumerable<SubContractorResponseDto>>> GetAll()
+            => Ok(await _subContractorService.GetAll());
 
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(SubContractorResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _subContractorService.GetByIdAsync(id);
-            return result is null
-                ? NotFound(new { message = $"SubContractor {id} not found." })
-                : Ok(result);
-        }
+        public async Task<ActionResult<SubContractorResponseDto>> GetById(int id)
+            => Ok(await _subContractorService.GetById(id));
 
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(SubContractorResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] SubContractorRequestDto dto)
+        public async Task<ActionResult<SubContractorResponseDto>> Create([FromBody] SubContractorRequestDto dto)
         {
-            var result = await _subContractorService.CreateAsync(dto);
+            var result = await _subContractorService.Create(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "SubContractor", result.SubContractorId.ToString(), "SubContractor created", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.SubContractorId }, result);
         }
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(SubContractorResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] SubContractorRequestDto dto)
+        public async Task<ActionResult<SubContractorResponseDto>> Update(int id, [FromBody] SubContractorRequestDto dto)
         {
-            var result = await _subContractorService.UpdateAsync(id, dto);
-            return result is null
-                ? NotFound(new { message = $"SubContractor {id} not found." })
-                : Ok(result);
+            var result = await _subContractorService.Update(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "SubContractor", id.ToString(), "SubContractor updated", GetIp());
+            return Ok(result);
         }
 
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var deleted = await _subContractorService.DeleteAsync(id);
-            return deleted ? NoContent() : NotFound(new { message = $"SubContractor {id} not found." });
+            await _subContractorService.Delete(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "SubContractor", id.ToString(), "SubContractor deleted", GetIp());
+            return NoContent();
         }
     }
 }

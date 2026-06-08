@@ -1,80 +1,59 @@
 using BuildManager.DTOs;
-using BuildManager.Services.Interfaces;
+using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
 {
-    [ApiController]
     [Route("api/[controller]")]
+    [ApiController]
     [Authorize]
     public class JobWorkController : ControllerBase
     {
-        private readonly IJobWorkService _jobWorkService;
+        private readonly IJobWorkService  _jobWorkService;
+        private readonly IAuditLogService _auditLog;
 
-        public JobWorkController(IJobWorkService jobWorkService)
+        public JobWorkController(IJobWorkService jobWorkService, IAuditLogService auditLog)
         {
             _jobWorkService = jobWorkService;
+            _auditLog       = auditLog;
         }
 
-        /// <summary>Get all job works.</summary>
+        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string  GetUser() => User.Identity?.Name ?? "unknown";
+
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<JobWorkResponseDto>), StatusCodes.Status200OK)]
-        public async Task<IActionResult> GetAll()
-        {
-            var result = await _jobWorkService.GetAllAsync();
-            return Ok(result);
-        }
+        public async Task<ActionResult<IEnumerable<JobWorkResponseDto>>> GetAll()
+            => Ok(await _jobWorkService.GetAll());
 
-        /// <summary>Get a job work by ID.</summary>
         [HttpGet("{id:int}")]
-        [ProducesResponseType(typeof(JobWorkResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetById(int id)
-        {
-            var result = await _jobWorkService.GetByIdAsync(id);
-            if (result is null)
-                return NotFound(new { message = $"JobWork {id} not found." });
+        public async Task<ActionResult<JobWorkResponseDto>> GetById(int id)
+            => Ok(await _jobWorkService.GetById(id));
 
-            return Ok(result);
-        }
-
-        /// <summary>Create a new job work. (Owner, Admin)</summary>
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(JobWorkResponseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> Create([FromBody] JobWorkRequestDto dto)
+        public async Task<ActionResult<JobWorkResponseDto>> Create([FromBody] JobWorkRequestDto dto)
         {
-            var result = await _jobWorkService.CreateAsync(dto);
+            var result = await _jobWorkService.Create(dto);
+            await _auditLog.LogAsync(GetUser(), "CREATE", "JobWork", result.JobWorkId.ToString(), "JobWork created", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.JobWorkId }, result);
         }
 
-        /// <summary>Update a job work. (Owner, Admin)</summary>
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
-        [ProducesResponseType(typeof(JobWorkResponseDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Update(int id, [FromBody] JobWorkRequestDto dto)
+        public async Task<ActionResult<JobWorkResponseDto>> Update(int id, [FromBody] JobWorkRequestDto dto)
         {
-            var result = await _jobWorkService.UpdateAsync(id, dto);
-            if (result is null)
-                return NotFound(new { message = $"JobWork {id} not found." });
-
+            var result = await _jobWorkService.Update(id, dto);
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "JobWork", id.ToString(), "JobWork updated", GetIp());
             return Ok(result);
         }
 
-        /// <summary>Delete a job work. (Owner only)</summary>
         [HttpDelete("{id:int}")]
         [Authorize(Roles = "Owner")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var deleted = await _jobWorkService.DeleteAsync(id);
-            if (!deleted)
-                return NotFound(new { message = $"JobWork {id} not found." });
-
+            await _jobWorkService.Delete(id);
+            await _auditLog.LogAsync(GetUser(), "DELETE", "JobWork", id.ToString(), "JobWork deleted", GetIp());
             return NoContent();
         }
     }

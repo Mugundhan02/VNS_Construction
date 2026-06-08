@@ -1,7 +1,8 @@
 using System.Net;
 using System.Text.Json;
+using BuildManager.Exceptions;
 
-namespace BuildManager.Middleware
+namespace BuildManager.Middlewares
 {
     /// <summary>
     /// Global exception handling middleware.
@@ -39,12 +40,17 @@ namespace BuildManager.Middleware
 
             var (statusCode, message) = ex switch
             {
-                ArgumentNullException      => (HttpStatusCode.BadRequest,            "Required value was missing."),
-                ArgumentException          => (HttpStatusCode.BadRequest,            ex.Message),
-                KeyNotFoundException       => (HttpStatusCode.NotFound,              "The requested resource was not found."),
-                UnauthorizedAccessException=> (HttpStatusCode.Unauthorized,          "Unauthorized access."),
-                InvalidOperationException  => (HttpStatusCode.UnprocessableEntity,   ex.Message),
-                _                          => (HttpStatusCode.InternalServerError,   "An unexpected error occurred. Please try again later.")
+                EntityNotFoundException      => (HttpStatusCode.NotFound,            ex.Message),
+                DuplicateEntityException     => (HttpStatusCode.Conflict,            ex.Message),
+                UnAuthorizedException        => (HttpStatusCode.Unauthorized,        ex.Message),
+                ValidationException          => (HttpStatusCode.UnprocessableEntity, ex.Message),
+                UnableToCreateEntityException=> (HttpStatusCode.UnprocessableEntity, ex.Message),
+                ArgumentNullException        => (HttpStatusCode.BadRequest,          "Required value was missing."),
+                ArgumentException            => (HttpStatusCode.BadRequest,          ex.Message),
+                KeyNotFoundException         => (HttpStatusCode.NotFound,            "The requested resource was not found."),
+                UnauthorizedAccessException  => (HttpStatusCode.Unauthorized,        "Unauthorized access."),
+                InvalidOperationException    => (HttpStatusCode.UnprocessableEntity, ex.Message),
+                _                            => (HttpStatusCode.InternalServerError, "An unexpected error occurred. Please try again later.")
             };
 
             context.Response.StatusCode = (int)statusCode;

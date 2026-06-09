@@ -1,27 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BuildManager.Models
 {
-    /// <summary>
-    /// Represents a job work / labour work item in the master list.
-    /// Corresponds to the "Company JobWork Details" screen.
-    /// Examples: Site Cleaning, Earthwork Excavations, Column Shutter, Footing Concrete, etc.
-    /// </summary>
     public class JobWork
     {
+        [Key]
         public int JobWorkId { get; set; }
 
+        [Required, MaxLength(200)]
         public string JobWorkName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Unit of measurement (e.g., Cft, Sft, Rft, Kg, Nos, Lit)
-        /// </summary>
+        [MaxLength(50)]
         public string? Unit { get; set; }
 
-        /// <summary>
-        /// Standard rate per unit
-        /// </summary>
+        [Range(0, double.MaxValue)]
         public decimal Rate { get; set; } = 0;
 
-        // Navigation property
         public ICollection<SubContractorTransaction> SubContractorTransactions { get; set; } = new List<SubContractorTransaction>();
     }
 }

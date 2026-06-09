@@ -1,14 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BuildManager.Models
 {
-    /// <summary>
-    /// Lookup table for "To Whom" references used in transactions.
-    /// Corresponds to the "Company Whom Details" screen.
-    /// Example value: ADAIKKAN.
-    /// </summary>
     public class Whom
     {
+        [Key]
         public int WhomId { get; set; }
 
+        [Required, MaxLength(200)]
         public string WhomName { get; set; } = string.Empty;
     }
 }

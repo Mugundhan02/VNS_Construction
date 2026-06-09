@@ -1,33 +1,24 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BuildManager.Models
 {
-    /// <summary>
-    /// Represents the bank account details of the company.
-    /// Corresponds to the "Company Bank Details" screen.
-    /// </summary>
     public class CompanyBank
     {
+        [Key]
         public int CompanyBankId { get; set; }
 
         public int CompanyId { get; set; }
 
+        [Required, MaxLength(200)]
         public string BankName { get; set; } = string.Empty;
 
-        public string? BankBranch { get; set; }
+        [MaxLength(100)] public string? BankBranch    { get; set; }
+        [MaxLength(20)]  public string? BranchCode    { get; set; }
+        [MaxLength(11)]  public string? IfscCode      { get; set; }
+        [MaxLength(100)] public string? AccountName   { get; set; }
+        [MaxLength(30)]  public string? AccountNumber { get; set; }
+        [MaxLength(30)]  public string? AccountType   { get; set; }
 
-        public string? BranchCode { get; set; }
-
-        public string? IfscCode { get; set; }
-
-        public string? AccountName { get; set; }
-
-        public string? AccountNumber { get; set; }
-
-        /// <summary>
-        /// e.g., Savings, Current
-        /// </summary>
-        public string? AccountType { get; set; }
-
-        // Navigation property
         public Company Company { get; set; } = null!;
     }
 }

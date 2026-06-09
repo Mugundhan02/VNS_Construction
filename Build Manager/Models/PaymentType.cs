@@ -1,14 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BuildManager.Models
 {
-    /// <summary>
-    /// Lookup table for payment types.
-    /// Corresponds to the "Company Payment Details" screen.
-    /// Example values: Cash, Cheque, GPAY, NEFT, Phone Pay, RTGS.
-    /// </summary>
     public class PaymentType
     {
+        [Key]
         public int PaymentTypeId { get; set; }
 
+        [Required, MaxLength(100)]
         public string PaymentTypeName { get; set; } = string.Empty;
     }
 }

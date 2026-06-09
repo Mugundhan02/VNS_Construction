@@ -1,27 +1,21 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace BuildManager.Models
 {
-    /// <summary>
-    /// Represents a construction material in the master list.
-    /// Corresponds to the "Company Material Details" screen.
-    /// Example values: Cement, 1.5 Jally, Flyash brick, M.Sand, etc.
-    /// </summary>
     public class Material
     {
+        [Key]
         public int MaterialId { get; set; }
 
+        [Required, MaxLength(200)]
         public string MaterialName { get; set; } = string.Empty;
 
-        /// <summary>
-        /// Unit of measurement (e.g., Bag, Nos, m3, Unit, Kg, Load)
-        /// </summary>
+        [MaxLength(50)]
         public string? Unit { get; set; }
 
-        /// <summary>
-        /// Default/standard rate per unit
-        /// </summary>
+        [Range(0, double.MaxValue)]
         public decimal Rate { get; set; } = 0;
 
-        // Navigation property
         public ICollection<SupplierTransaction> SupplierTransactions { get; set; } = new List<SupplierTransaction>();
     }
 }

@@ -4,54 +4,52 @@ namespace BuildManager.DTOs
 {
     // ── Register ──────────────────────────────────────────────────────────────
 
-    /// <summary>
-    /// Used to register the first Owner account for a company,
-    /// or by an Owner to add Admin/User accounts.
-    /// </summary>
     public class RegisterRequestDto
     {
-        [Required, MaxLength(200)]
+        [Required]
+        [MaxLength(200)]
         public string CompanyName { get; set; } = string.Empty;
 
-        [Required, MaxLength(100)]
+        [Required]
+        [MaxLength(100)]
         public string UserName { get; set; } = string.Empty;
 
-        [Required, MinLength(6)]
+        [Required]
+        [MinLength(6)]
         public string Password { get; set; } = string.Empty;
 
-        [Required, Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
+        [Required]
+        [Compare(nameof(Password), ErrorMessage = "Passwords do not match.")]
         public string ConfirmPassword { get; set; } = string.Empty;
     }
 
     public class RegisterResponseDto
     {
-        public int    CompanyUserId { get; set; }
-        public string UserName      { get; set; } = string.Empty;
-        public string UserType      { get; set; } = string.Empty;
-        public string CompanyName   { get; set; } = string.Empty;
+        public int CompanyUserId { get; set; }
+        public string UserName { get; set; } = string.Empty;
+        public string UserType { get; set; } = string.Empty;
+        public string CompanyName { get; set; } = string.Empty;
     }
 
     // ── Login ─────────────────────────────────────────────────────────────────
 
     public class LoginRequestDto
     {
-        [Required] public string UserName { get; set; } = string.Empty;
-        [Required] public string Password { get; set; } = string.Empty;
+        [Required]
+        public string UserName { get; set; } = string.Empty;
+
+        [Required]
+        public string Password { get; set; } = string.Empty;
     }
 
     public class LoginResponseDto
     {
-        public string Token        { get; set; } = string.Empty;
+        public string Token { get; set; } = string.Empty;
         public string RefreshToken { get; set; } = string.Empty;
-        public string UserName     { get; set; } = string.Empty;
-        public string UserType     { get; set; } = string.Empty;
-        public string CompanyName  { get; set; } = string.Empty;
-        public DateTime ExpiresAt  { get; set; }
-
-        /// <summary>
-        /// Permissions granted to this role for frontend menu rendering.
-        /// e.g. ["masters", "transactions", "reports"]
-        /// </summary>
+        public string UserName { get; set; } = string.Empty;
+        public string UserType { get; set; } = string.Empty;
+        public string CompanyName { get; set; } = string.Empty;
+        public DateTime ExpiresAt { get; set; }
         public IEnumerable<string> Permissions { get; set; } = Enumerable.Empty<string>();
     }
 
@@ -59,7 +57,8 @@ namespace BuildManager.DTOs
 
     public class RefreshTokenRequestDto
     {
-        [Required] public string RefreshToken { get; set; } = string.Empty;
+        [Required]
+        public string RefreshToken { get; set; } = string.Empty;
     }
 
     // ── Company User CRUD ─────────────────────────────────────────────────────
@@ -69,34 +68,55 @@ namespace BuildManager.DTOs
         [Required]
         public int CompanyId { get; set; }
 
-        [Required, MaxLength(100)]
+        [Required]
+        [MaxLength(100)]
         public string UserName { get; set; } = string.Empty;
 
-        [Required, MinLength(6)]
+        [Required]
+        [MinLength(6)]
         public string Password { get; set; } = string.Empty;
 
-        /// <summary>Owner | Admin | User</summary>
         [Required]
+        [MaxLength(20)]
         public string UserType { get; set; } = "User";
+    }
+
+    public class CompanyUserUpdateDto
+    {
+        [Required]
+        [MaxLength(100)]
+        public string UserName { get; set; } = string.Empty;
+
+        [Required]
+        [MaxLength(20)]
+        public string UserType { get; set; } = "User";
+
+        public bool IsActive { get; set; }
     }
 
     public class CompanyUserResponseDto
     {
-        public int    CompanyUserId { get; set; }
-        public int    CompanyId    { get; set; }
-        public string CompanyName  { get; set; } = string.Empty;
-        public string UserName     { get; set; } = string.Empty;
-        public string UserType     { get; set; } = string.Empty;
-        public bool   IsActive     { get; set; }
+        public int CompanyUserId { get; set; }
+        public int CompanyId { get; set; }
+        public string CompanyName { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string UserType { get; set; } = string.Empty;
+        public bool IsActive { get; set; }
     }
 
     // ── Change Password ───────────────────────────────────────────────────────
 
     public class ChangePasswordRequestDto
     {
-        [Required] public string CurrentPassword { get; set; } = string.Empty;
-        [Required, MinLength(6)] public string NewPassword { get; set; } = string.Empty;
-        [Required, Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
+        [Required]
+        public string CurrentPassword { get; set; } = string.Empty;
+
+        [Required]
+        [MinLength(6)]
+        public string NewPassword { get; set; } = string.Empty;
+
+        [Required]
+        [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
         public string ConfirmNewPassword { get; set; } = string.Empty;
     }
 }

@@ -3,10 +3,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildManager.Contexts
 {
-    /// <summary>
-    /// Entity Framework Core DbContext for the Build Manager application.
-    /// Covers all master and transaction entities for VNS Construction.
-    /// </summary>
     public class BuildManagerDbContext : DbContext
     {
         public BuildManagerDbContext(DbContextOptions<BuildManagerDbContext> options)
@@ -16,60 +12,26 @@ namespace BuildManager.Contexts
 
         // ── Masters ──────────────────────────────────────────────────────────
 
-        /// <summary>Company settings (VNS Construction profile)</summary>
         public DbSet<Company> Companies { get; set; }
-
-        /// <summary>Application users tied to a company with role-based access</summary>
         public DbSet<CompanyUser> CompanyUsers { get; set; }
-
-        /// <summary>Refresh tokens for session management</summary>
         public DbSet<RefreshToken> RefreshTokens { get; set; }
-
-        /// <summary>Company bank accounts</summary>
         public DbSet<CompanyBank> CompanyBanks { get; set; }
-
-        /// <summary>Lookup: office expense categories</summary>
         public DbSet<OfficeExpense> OfficeExpenses { get; set; }
-
-        /// <summary>Lookup: payment types (Cash, NEFT, GPAY, etc.)</summary>
         public DbSet<PaymentType> PaymentTypes { get; set; }
-
-        /// <summary>Lookup: "To Whom" references</summary>
         public DbSet<Whom> Whoms { get; set; }
-
-        /// <summary>Installment / term definitions</summary>
         public DbSet<InstallmentTerm> InstallmentTerms { get; set; }
-
-        /// <summary>Client (project owner) master</summary>
         public DbSet<Client> Clients { get; set; }
-
-        /// <summary>Supplier (material vendor) master</summary>
         public DbSet<Supplier> Suppliers { get; set; }
-
-        /// <summary>Sub-contractor (labour contractor) master</summary>
         public DbSet<SubContractor> SubContractors { get; set; }
-
-        /// <summary>Material (construction material) master</summary>
         public DbSet<Material> Materials { get; set; }
-
-        /// <summary>Job work / labour work item master</summary>
         public DbSet<JobWork> JobWorks { get; set; }
 
         // ── Transactions ─────────────────────────────────────────────────────
 
-        /// <summary>Client money receipts / payments</summary>
         public DbSet<ClientTransaction> ClientTransactions { get; set; }
-
-        /// <summary>Supplier material purchase transactions</summary>
         public DbSet<SupplierTransaction> SupplierTransactions { get; set; }
-
-        /// <summary>Sub-contractor labour/job work transactions</summary>
         public DbSet<SubContractorTransaction> SubContractorTransactions { get; set; }
-
-        /// <summary>Company office expense transactions</summary>
         public DbSet<CompanyExpenseTransaction> CompanyExpenseTransactions { get; set; }
-
-        /// <summary>Audit log for create/update/delete operations</summary>
         public DbSet<AuditLog> AuditLogs { get; set; }
 
         // ── Model Configuration ───────────────────────────────────────────────
@@ -83,13 +45,25 @@ namespace BuildManager.Contexts
             {
                 entity.HasKey(e => e.CompanyId);
                 entity.Property(e => e.CompanyName).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.PinCode).HasMaxLength(10);
-                entity.Property(e => e.PhoneNumber).HasMaxLength(20);
-                entity.Property(e => e.MobileNumber).HasMaxLength(20);
-                entity.Property(e => e.EmailId).HasMaxLength(200);
-                entity.Property(e => e.PanCardNumber).HasMaxLength(20);
-                entity.Property(e => e.TinNumber).HasMaxLength(30);
-                entity.Property(e => e.CstNumber).HasMaxLength(30);
+
+                entity.OwnsOne(e => e.Address, address =>
+                {
+                    address.Property(a => a.PinCode).HasMaxLength(10);
+                });
+
+                entity.OwnsOne(e => e.ContactInfo, contact =>
+                {
+                    contact.Property(c => c.PhoneNumber).HasMaxLength(20);
+                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
+                    contact.Property(c => c.EmailId).HasMaxLength(200);
+                });
+
+                entity.OwnsOne(e => e.IdentityDetails, identity =>
+                {
+                    identity.Property(i => i.PanCardNumber).HasMaxLength(20);
+                    identity.Property(i => i.TinNumber).HasMaxLength(30);
+                    identity.Property(i => i.CstNumber).HasMaxLength(30);
+                });
             });
 
             // ── RefreshToken ──
@@ -110,8 +84,8 @@ namespace BuildManager.Contexts
             {
                 entity.HasKey(e => e.CompanyUserId);
                 entity.Property(e => e.UserName).IsRequired().HasMaxLength(100);
-                entity.Property(e => e.PasswordHash).IsRequired();    // Base64 HMAC-SHA512 hash (88 chars)
-                entity.Property(e => e.PasswordSalt).IsRequired();    // Base64 64-byte CSPRNG salt (88 chars)
+                entity.Property(e => e.PasswordHash).IsRequired();
+                entity.Property(e => e.PasswordSalt).IsRequired();
                 entity.Property(e => e.UserType).IsRequired().HasMaxLength(20);
                 entity.HasIndex(e => e.UserName).IsUnique();
 
@@ -170,10 +144,23 @@ namespace BuildManager.Contexts
             {
                 entity.HasKey(e => e.ClientId);
                 entity.Property(e => e.ClientName).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.PinCode).HasMaxLength(10);
-                entity.Property(e => e.MobileNumber).HasMaxLength(20);
-                entity.Property(e => e.EmailId).HasMaxLength(200);
-                entity.Property(e => e.PanCardNumber).HasMaxLength(20);
+
+                entity.OwnsOne(e => e.Address, address =>
+                {
+                    address.Property(a => a.PinCode).HasMaxLength(10);
+                });
+
+                entity.OwnsOne(e => e.ContactInfo, contact =>
+                {
+                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
+                    contact.Property(c => c.EmailId).HasMaxLength(200);
+                });
+
+                entity.OwnsOne(e => e.IdentityDetails, identity =>
+                {
+                    identity.Property(i => i.PanCardNumber).HasMaxLength(20);
+                });
+
                 entity.Property(e => e.EstimateUnit).HasPrecision(18, 4);
                 entity.Property(e => e.EstimateRate).HasPrecision(18, 4);
                 entity.Property(e => e.EstimateAmount).HasPrecision(18, 2);
@@ -184,9 +171,17 @@ namespace BuildManager.Contexts
             {
                 entity.HasKey(e => e.SupplierId);
                 entity.Property(e => e.SupplierName).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.PinCode).HasMaxLength(10);
-                entity.Property(e => e.MobileNumber).HasMaxLength(20);
-                entity.Property(e => e.EmailId).HasMaxLength(200);
+
+                entity.OwnsOne(e => e.Address, address =>
+                {
+                    address.Property(a => a.PinCode).HasMaxLength(10);
+                });
+
+                entity.OwnsOne(e => e.ContactInfo, contact =>
+                {
+                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
+                    contact.Property(c => c.EmailId).HasMaxLength(200);
+                });
             });
 
             // ── SubContractor ──
@@ -194,9 +189,21 @@ namespace BuildManager.Contexts
             {
                 entity.HasKey(e => e.SubContractorId);
                 entity.Property(e => e.SubContractorName).IsRequired().HasMaxLength(200);
-                entity.Property(e => e.PinCode).HasMaxLength(10);
-                entity.Property(e => e.MobileNumber).HasMaxLength(20);
-                entity.Property(e => e.Rate).HasPrecision(18, 4);
+
+                entity.OwnsOne(e => e.Address, address =>
+                {
+                    address.Property(a => a.PinCode).HasMaxLength(10);
+                });
+
+                entity.OwnsOne(e => e.ContactInfo, contact =>
+                {
+                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
+                });
+
+                entity.OwnsOne(e => e.WorkDetails, work =>
+                {
+                    work.Property(w => w.Rate).HasPrecision(18, 4);
+                });
             });
 
             // ── Material ──

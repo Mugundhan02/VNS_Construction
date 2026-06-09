@@ -4,10 +4,6 @@ using BuildManager.Exceptions;
 
 namespace BuildManager.Middlewares
 {
-    /// <summary>
-    /// Global exception handling middleware.
-    /// Catches all unhandled exceptions and returns a consistent JSON error response.
-    /// </summary>
     public class ExceptionHandlingMiddleware
     {
         private readonly RequestDelegate _next;
@@ -15,7 +11,7 @@ namespace BuildManager.Middlewares
 
         public ExceptionHandlingMiddleware(RequestDelegate next, ILogger<ExceptionHandlingMiddleware> logger)
         {
-            _next   = next;
+            _next = next;
             _logger = logger;
         }
 
@@ -24,50 +20,81 @@ namespace BuildManager.Middlewares
             try
             {
                 await _next(context);
+
+                // Intercept 401/403 set by JWT middleware (no exception thrown)
+                if (!context.Response.HasStarted)
+                {
+                    if (context.Response.StatusCode == 401)
+                    {
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        {
+                            statusCode = 401,
+                            errorCode = "UNAUTHORIZED",
+                            message = "Authentication required. Please provide a valid Bearer token.",
+                            timestamp = DateTime.UtcNow,
+                            traceId = context.TraceIdentifier
+                        }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                    }
+                    else if (context.Response.StatusCode == 403)
+                    {
+                        context.Response.ContentType = "application/json";
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(new
+                        {
+                            statusCode = 403,
+                            errorCode = "FORBIDDEN",
+                            message = "You do not have permission to access this resource.",
+                            timestamp = DateTime.UtcNow,
+                            traceId = context.TraceIdentifier
+                        }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase }));
+                    }
+                }
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Unhandled exception on {Method} {Path}",
                     context.Request.Method, context.Request.Path);
 
-                await WriteErrorResponseAsync(context, ex);
+                await HandleExceptionAsync(context, ex);
             }
         }
 
-        private static async Task WriteErrorResponseAsync(HttpContext context, Exception ex)
+        private static async Task HandleExceptionAsync(HttpContext context, Exception ex)
         {
-            context.Response.ContentType = "application/json";
+            if (context.Response.HasStarted) return;
 
-            var (statusCode, message) = ex switch
+            var (statusCode, errorCode, message) = ex switch
             {
-                EntityNotFoundException      => (HttpStatusCode.NotFound,            ex.Message),
-                DuplicateEntityException     => (HttpStatusCode.Conflict,            ex.Message),
-                UnAuthorizedException        => (HttpStatusCode.Unauthorized,        ex.Message),
-                ValidationException          => (HttpStatusCode.UnprocessableEntity, ex.Message),
-                UnableToCreateEntityException=> (HttpStatusCode.UnprocessableEntity, ex.Message),
-                ArgumentNullException        => (HttpStatusCode.BadRequest,          "Required value was missing."),
-                ArgumentException            => (HttpStatusCode.BadRequest,          ex.Message),
-                KeyNotFoundException         => (HttpStatusCode.NotFound,            "The requested resource was not found."),
-                UnauthorizedAccessException  => (HttpStatusCode.Unauthorized,        "Unauthorized access."),
-                InvalidOperationException    => (HttpStatusCode.UnprocessableEntity, ex.Message),
-                _                            => (HttpStatusCode.InternalServerError, "An unexpected error occurred. Please try again later.")
+                EntityNotFoundException => (HttpStatusCode.NotFound, "NOT_FOUND", ex.Message),
+                DuplicateEntityException => (HttpStatusCode.Conflict, "DUPLICATE", ex.Message),
+                UnAuthorizedException => (HttpStatusCode.Unauthorized, "UNAUTHORIZED", ex.Message),
+                ValidationException => (HttpStatusCode.UnprocessableEntity, "VALIDATION_ERROR", ex.Message),
+                UnableToCreateEntityException => (HttpStatusCode.UnprocessableEntity, "CREATE_FAILED", ex.Message),
+                ArgumentNullException => (HttpStatusCode.BadRequest, "BAD_REQUEST", "Required value was missing."),
+                ArgumentException => (HttpStatusCode.BadRequest, "BAD_REQUEST", ex.Message),
+                KeyNotFoundException => (HttpStatusCode.NotFound, "NOT_FOUND", "The requested resource was not found."),
+                UnauthorizedAccessException => (HttpStatusCode.Unauthorized, "UNAUTHORIZED", "Unauthorized access."),
+                InvalidOperationException => (HttpStatusCode.UnprocessableEntity, "INVALID_OPERATION", ex.Message),
+                _ => (HttpStatusCode.InternalServerError, "INTERNAL_ERROR", "An unexpected error occurred. Please try again later.")
             };
 
+            context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)statusCode;
 
-            var errorResponse = new
+            var response = new
             {
-                statusCode = context.Response.StatusCode,
+                statusCode = (int)statusCode,
+                errorCode,
                 message,
-                timestamp  = DateTime.UtcNow
+                timestamp = DateTime.UtcNow,
+                traceId = context.TraceIdentifier
             };
 
-            var json = JsonSerializer.Serialize(errorResponse, new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
-
-            await context.Response.WriteAsync(json);
+            await context.Response.WriteAsync(
+                JsonSerializer.Serialize(response, new JsonSerializerOptions
+                {
+                    PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                }));
         }
     }
 }

@@ -1,41 +1,27 @@
 [
   {
     "ContainingType": "BuildManager.Controllers.AuthController",
-    "Method": "ChangePassword",
-    "RelativePath": "api/Auth/change-password",
-    "HttpMethod": "POST",
+    "Method": "ForgotPassword",
+    "RelativePath": "api/Auth/forgot-password",
+    "HttpMethod": "PUT",
     "IsController": true,
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
-        "Type": "BuildManager.DTOs.ChangePasswordRequestDto",
+        "Name": "request",
+        "Type": "BuildManager.DTOs.ForgotPasswordDto",
         "IsRequired": true
       }
     ],
     "ReturnTypes": [
       {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 204
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
+        "Type": "System.String",
         "MediaTypes": [
           "text/plain",
           "application/json",
           "text/json"
         ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 401
+        "StatusCode": 200
       }
     ]
   },
@@ -48,7 +34,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
+        "Name": "request",
         "Type": "BuildManager.DTOs.LoginRequestDto",
         "IsRequired": true
       }
@@ -62,81 +48,6 @@
           "text/json"
         ],
         "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 401
-      }
-    ]
-  },
-  {
-    "ContainingType": "BuildManager.Controllers.AuthController",
-    "Method": "Logout",
-    "RelativePath": "api/Auth/logout",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "BuildManager.DTOs.RefreshTokenRequestDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "System.Void",
-        "MediaTypes": [],
-        "StatusCode": 204
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      }
-    ]
-  },
-  {
-    "ContainingType": "BuildManager.Controllers.AuthController",
-    "Method": "RefreshToken",
-    "RelativePath": "api/Auth/refresh-token",
-    "HttpMethod": "POST",
-    "IsController": true,
-    "Order": 0,
-    "Parameters": [
-      {
-        "Name": "dto",
-        "Type": "BuildManager.DTOs.RefreshTokenRequestDto",
-        "IsRequired": true
-      }
-    ],
-    "ReturnTypes": [
-      {
-        "Type": "BuildManager.DTOs.LoginResponseDto",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 200
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 401
       }
     ]
   },
@@ -149,7 +60,7 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "dto",
+        "Name": "request",
         "Type": "BuildManager.DTOs.RegisterRequestDto",
         "IsRequired": true
       }
@@ -162,25 +73,7 @@
           "application/json",
           "text/json"
         ],
-        "StatusCode": 201
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 400
-      },
-      {
-        "Type": "Microsoft.AspNetCore.Mvc.ProblemDetails",
-        "MediaTypes": [
-          "text/plain",
-          "application/json",
-          "text/json"
-        ],
-        "StatusCode": 409
+        "StatusCode": 200
       }
     ]
   },

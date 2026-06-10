@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace BuildManager.Models
 {
@@ -7,10 +8,20 @@ namespace BuildManager.Models
         [Key]
         public int CompanyUserId { get; set; }
 
+        [Required]
         public int CompanyId { get; set; }
 
-        [Required, MaxLength(100)]
+        [ForeignKey(nameof(CompanyId))]
+        public Company? Company { get; set; }
+
+        [Required]
+        [MaxLength(100)]
         public string UserName { get; set; } = string.Empty;
+
+        // ── 👈 ADD THIS COLUMN TO YOUR CLASS ──
+        [Required]
+        [MaxLength(250)]
+        public string EmailId { get; set; } = string.Empty;
 
         [Required]
         public string PasswordHash { get; set; } = string.Empty;
@@ -18,12 +29,10 @@ namespace BuildManager.Models
         [Required]
         public string PasswordSalt { get; set; } = string.Empty;
 
-        [Required, MaxLength(20)]
+        [Required]
+        [MaxLength(20)]
         public string UserType { get; set; } = "User";
 
         public bool IsActive { get; set; } = true;
-
-        public Company                   Company       { get; set; } = null!;
-        public ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
     }
 }

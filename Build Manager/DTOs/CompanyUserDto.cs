@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace BuildManager.DTOs
 {
-    // ── Register ──────────────────────────────────────────────────────────────
+    // ── Register DTOs ─────────────────────────────────────────────────────────
 
     public class RegisterRequestDto
     {
@@ -13,6 +13,11 @@ namespace BuildManager.DTOs
         [Required]
         [MaxLength(100)]
         public string UserName { get; set; } = string.Empty;
+
+        [Required]
+        [EmailAddress]
+        [MaxLength(250)]
+        public string EmailId { get; set; } = string.Empty; // Added to register the email id
 
         [Required]
         [MinLength(6)]
@@ -27,11 +32,11 @@ namespace BuildManager.DTOs
     {
         public int CompanyUserId { get; set; }
         public string UserName { get; set; } = string.Empty;
-        public string UserType { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
     }
 
-    // ── Login ─────────────────────────────────────────────────────────────────
+    // ── Login DTOs ────────────────────────────────────────────────────────────
 
     public class LoginRequestDto
     {
@@ -45,23 +50,28 @@ namespace BuildManager.DTOs
     public class LoginResponseDto
     {
         public string Token { get; set; } = string.Empty;
-        public string RefreshToken { get; set; } = string.Empty;
         public string UserName { get; set; } = string.Empty;
-        public string UserType { get; set; } = string.Empty;
         public string CompanyName { get; set; } = string.Empty;
-        public DateTime ExpiresAt { get; set; }
-        public IEnumerable<string> Permissions { get; set; } = Enumerable.Empty<string>();
     }
 
-    // ── Refresh Token ─────────────────────────────────────────────────────────
+    // ── Forgot Password DTOs ──────────────────────────────────────────────────
 
-    public class RefreshTokenRequestDto
+    public class ForgotPasswordDto
     {
         [Required]
-        public string RefreshToken { get; set; } = string.Empty;
+        [EmailAddress]
+        public string EmailId { get; set; } = string.Empty;
+
+        [Required]
+        [MinLength(6)]
+        public string NewPassword { get; set; } = string.Empty;
+
+        [Required]
+        [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
+        public string ConfirmNewPassword { get; set; } = string.Empty;
     }
 
-    // ── Company User CRUD ─────────────────────────────────────────────────────
+    // ── Company User CRUD DTOs ────────────────────────────────────────────────
 
     public class CompanyUserRequestDto
     {
@@ -102,21 +112,5 @@ namespace BuildManager.DTOs
         public string UserName { get; set; } = string.Empty;
         public string UserType { get; set; } = string.Empty;
         public bool IsActive { get; set; }
-    }
-
-    // ── Change Password ───────────────────────────────────────────────────────
-
-    public class ChangePasswordRequestDto
-    {
-        [Required]
-        public string CurrentPassword { get; set; } = string.Empty;
-
-        [Required]
-        [MinLength(6)]
-        public string NewPassword { get; set; } = string.Empty;
-
-        [Required]
-        [Compare(nameof(NewPassword), ErrorMessage = "Passwords do not match.")]
-        public string ConfirmNewPassword { get; set; } = string.Empty;
     }
 }

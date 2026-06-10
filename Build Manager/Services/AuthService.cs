@@ -1,4 +1,3 @@
-using System.Security.Cryptography;
 using BuildManager.Contexts;
 using BuildManager.DTOs;
 using BuildManager.Exceptions;
@@ -11,49 +10,16 @@ namespace BuildManager.Services
     public class AuthService : IAuthService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly ITokenService         _tokenService;
-        private readonly IPasswordService      _passwordService;
-
-        private static readonly Dictionary<string, IEnumerable<string>> RolePermissions = new()
-        {
-            ["Owner"] = new[]
-            {
-                "masters.company-settings", "masters.company-user", "masters.company-bank",
-                "masters.office-expense",   "masters.payment-types","masters.whom",
-                "masters.installment-term", "masters.client",       "masters.supplier",
-                "masters.subcontractor",    "masters.material",     "masters.jobwork",
-                "transactions.new-transaction", "transactions.stock-transfer",
-                "transactions.stock-analysis",  "transactions.estimated-qty",
-                "transactions.installment-term",
-                "reports.company", "reports.client", "reports.supplier",
-                "reports.material","reports.labour-job"
-            },
-            ["Admin"] = new[]
-            {
-                "masters.company-settings", "masters.client",    "masters.supplier",
-                "masters.subcontractor",    "masters.material",  "masters.jobwork",
-                "masters.office-expense",   "masters.payment-types", "masters.whom",
-                "masters.installment-term",
-                "transactions.new-transaction", "transactions.stock-analysis",
-                "transactions.installment-term",
-                "reports.company", "reports.client", "reports.supplier",
-                "reports.material","reports.labour-job"
-            },
-            ["User"] = new[]
-            {
-                "transactions.new-transaction", "transactions.stock-analysis",
-                "transactions.installment-term",
-                "reports.client", "reports.supplier"
-            }
-        };
+        private readonly ITokenService _tokenService;
+        private readonly IPasswordService _passwordService;
 
         public AuthService(
             BuildManagerDbContext context,
-            ITokenService         tokenService,
-            IPasswordService      passwordService)
+            ITokenService tokenService,
+            IPasswordService passwordService)
         {
-            _context         = context;
-            _tokenService    = tokenService;
+            _context = context;
+            _tokenService = tokenService;
             _passwordService = passwordService;
         }
 
@@ -67,23 +33,22 @@ namespace BuildManager.Services
             if (exists)
                 throw new DuplicateEntityException("User", "username", dto.UserName);
 
-            // Create the company first
             var company = new Company { CompanyName = dto.CompanyName };
             _context.Companies.Add(company);
             await _context.SaveChangesAsync();
 
-            // Generate unique 512-bit salt and compute HMAC-SHA512 hash
             var salt = _passwordService.GenerateSalt();
             var hash = _passwordService.HashPassword(dto.Password, salt);
 
             var user = new CompanyUser
             {
-                CompanyId    = company.CompanyId,
-                UserName     = dto.UserName,
+                CompanyId = company.CompanyId,
+                UserName = dto.UserName,
+                EmailId = dto.EmailId, // Now compiles perfectly!
                 PasswordHash = Convert.ToBase64String(hash),
                 PasswordSalt = Convert.ToBase64String(salt),
-                UserType     = "Owner",
-                IsActive     = true
+                UserType = "Owner",
+                IsActive = true
             };
 
             _context.CompanyUsers.Add(user);
@@ -92,9 +57,9 @@ namespace BuildManager.Services
             return new RegisterResponseDto
             {
                 CompanyUserId = user.CompanyUserId,
-                UserName      = user.UserName,
-                UserType      = user.UserType,
-                CompanyName   = company.CompanyName
+                UserName = user.UserName,
+                Password = dto.Password,
+                CompanyName = company.CompanyName
             };
         }
 
@@ -115,62 +80,24 @@ namespace BuildManager.Services
             if (!_passwordService.VerifyPassword(dto.Password, storedHash, storedSalt))
                 throw new UnAuthorizedException("Invalid username or password.");
 
-            var jwt          = await _tokenService.GenerateToken(user);
-            var refreshToken = await CreateRefreshToken(user.CompanyUserId);
+            var jwt = await _tokenService.GenerateToken(user);
 
-            return BuildResponse(user, jwt, refreshToken.Token);
+            return new LoginResponseDto
+            {
+                Token = jwt,
+                UserName = user.UserName,
+                CompanyName = user.Company?.CompanyName ?? string.Empty
+            };
         }
 
-        // ── Refresh Token ─────────────────────────────────────────────────────
+        // ── Forgot Password ───────────────────────────────────────────────────
 
-        public async Task<LoginResponseDto?> RefreshToken(RefreshTokenRequestDto dto)
+        public async Task<string> ForgotPassword(ForgotPasswordDto dto)
         {
-            var stored = await _context.RefreshTokens
-                .Include(r => r.CompanyUser)
-                    .ThenInclude(u => u.Company)
-                .FirstOrDefaultAsync(r => r.Token    == dto.RefreshToken
-                                       && !r.IsRevoked
-                                       && r.ExpiresAt > DateTime.UtcNow);
+            var user = await _context.CompanyUsers
+                .FirstOrDefaultAsync(u => u.EmailId == dto.EmailId)
+                ?? throw new UnAuthorizedException("No system profile matches the given email identity.");
 
-            if (stored is null) return null;
-
-            // Rotate — revoke old, issue new
-            stored.IsRevoked = true;
-            var newRefresh   = await CreateRefreshToken(stored.CompanyUserId);
-            var jwt          = await _tokenService.GenerateToken(stored.CompanyUser);
-            await _context.SaveChangesAsync();
-
-            return BuildResponse(stored.CompanyUser, jwt, newRefresh.Token);
-        }
-
-        // ── Revoke / Logout ───────────────────────────────────────────────────
-
-        public async Task<bool> RevokeToken(string refreshToken)
-        {
-            var stored = await _context.RefreshTokens
-                .FirstOrDefaultAsync(r => r.Token == refreshToken && !r.IsRevoked);
-
-            if (stored is null) return false;
-
-            stored.IsRevoked = true;
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        // ── Change Password ───────────────────────────────────────────────────
-
-        public async Task<bool> ChangePassword(int companyUserId, ChangePasswordRequestDto dto)
-        {
-            var user = await _context.CompanyUsers.FindAsync(companyUserId)
-                ?? throw new EntityNotFoundException("User", companyUserId);
-
-            var storedHash = Convert.FromBase64String(user.PasswordHash);
-            var storedSalt = Convert.FromBase64String(user.PasswordSalt);
-
-            if (!_passwordService.VerifyPassword(dto.CurrentPassword, storedHash, storedSalt))
-                throw new UnAuthorizedException("Current password is incorrect.");
-
-            // Generate a brand-new salt on every password change
             var newSalt = _passwordService.GenerateSalt();
             var newHash = _passwordService.HashPassword(dto.NewPassword, newSalt);
 
@@ -178,40 +105,7 @@ namespace BuildManager.Services
             user.PasswordSalt = Convert.ToBase64String(newSalt);
 
             await _context.SaveChangesAsync();
-            return true;
-        }
-
-        // ── Private Helpers ───────────────────────────────────────────────────
-
-        private async Task<RefreshToken> CreateRefreshToken(int companyUserId)
-        {
-            var token = new RefreshToken
-            {
-                CompanyUserId = companyUserId,
-                Token         = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                ExpiresAt     = DateTime.UtcNow.AddDays(7),
-                CreatedAt     = DateTime.UtcNow,
-                IsRevoked     = false
-            };
-            _context.RefreshTokens.Add(token);
-            await _context.SaveChangesAsync();
-            return token;
-        }
-
-        private static LoginResponseDto BuildResponse(
-            CompanyUser user, string jwt, string refreshToken)
-        {
-            RolePermissions.TryGetValue(user.UserType, out var permissions);
-            return new LoginResponseDto
-            {
-                Token        = jwt,
-                RefreshToken = refreshToken,
-                UserName     = user.UserName,
-                UserType     = user.UserType,
-                CompanyName  = user.Company?.CompanyName ?? string.Empty,
-                ExpiresAt    = DateTime.UtcNow.AddHours(8),
-                Permissions  = permissions ?? Enumerable.Empty<string>()
-            };
+            return "Password has been successfully modified.";
         }
     }
 }

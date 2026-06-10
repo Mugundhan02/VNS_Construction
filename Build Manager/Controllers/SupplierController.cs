@@ -16,11 +16,11 @@ namespace BuildManager.Controllers
         public SupplierController(ISupplierService supplierService, IAuditLogService auditLog)
         {
             _supplierService = supplierService;
-            _auditLog        = auditLog;
+            _auditLog = auditLog;
         }
 
-        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string  GetUser() => User.Identity?.Name ?? "unknown";
+        private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SupplierResponseDto>>> GetAll()
@@ -31,20 +31,18 @@ namespace BuildManager.Controllers
             => Ok(await _supplierService.GetById(id));
 
         [HttpPost]
-        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<SupplierResponseDto>> Create([FromBody] SupplierRequestDto dto)
         {
             var result = await _supplierService.Create(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "Supplier", result.SupplierId.ToString(), "Supplier created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "Supplier", result.SupplierId.ToString(), $"Created new merchant dispatch merchant account: {dto.SupplierName}", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.SupplierId }, result);
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<SupplierResponseDto>> Update(int id, [FromBody] SupplierRequestDto dto)
         {
             var result = await _supplierService.Update(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "Supplier", id.ToString(), "Supplier updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "Supplier", id.ToString(), $"Adjusted merchant logistics data for supplier ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -53,7 +51,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             await _supplierService.Delete(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "Supplier", id.ToString(), "Supplier deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "Supplier", id.ToString(), $"Removed active supplier index record trace ID {id}", GetIp());
             return NoContent();
         }
     }

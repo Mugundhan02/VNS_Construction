@@ -10,17 +10,17 @@ namespace BuildManager.Controllers
     [Authorize(Roles = "Owner,Admin")]
     public class CompanyController : ControllerBase
     {
-        private readonly ICompanyService  _companyService;
+        private readonly ICompanyService _companyService;
         private readonly IAuditLogService _auditLog;
 
         public CompanyController(ICompanyService companyService, IAuditLogService auditLog)
         {
             _companyService = companyService;
-            _auditLog       = auditLog;
+            _auditLog = auditLog;
         }
 
-        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string  GetUser() => User.Identity?.Name ?? "unknown";
+        private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CompanyResponseDto>>> GetAll()
@@ -35,16 +35,15 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<CompanyResponseDto>> Create([FromBody] CompanyRequestDto dto)
         {
             var result = await _companyService.Create(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "Company", result.CompanyId.ToString(), "Company created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "Company", result.CompanyId.ToString(), $"Created corporate entity profile: {dto.CompanyName}", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.CompanyId }, result);
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<CompanyResponseDto>> Update(int id, [FromBody] CompanyRequestDto dto)
         {
             var result = await _companyService.Update(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "Company", id.ToString(), "Company updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "Company", id.ToString(), $"Modified commercial configurations for company ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -53,7 +52,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             await _companyService.Delete(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "Company", id.ToString(), "Company deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "Company", id.ToString(), $"Removed company record track from structural directory ID {id}", GetIp());
             return NoContent();
         }
     }

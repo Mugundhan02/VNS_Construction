@@ -11,16 +11,16 @@ namespace BuildManager.Controllers
     public class TransactionController : ControllerBase
     {
         private readonly ITransactionService _transactionService;
-        private readonly IAuditLogService    _auditLog;
+        private readonly IAuditLogService _auditLog;
 
         public TransactionController(ITransactionService transactionService, IAuditLogService auditLog)
         {
             _transactionService = transactionService;
-            _auditLog           = auditLog;
+            _auditLog = auditLog;
         }
 
-        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string  GetUser() => User.Identity?.Name ?? "unknown";
+        private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         // ── Dashboard / Summary ───────────────────────────────────────────────
 
@@ -55,7 +55,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<ClientTransactionResponseDto>> CreateClientTransaction([FromBody] ClientTransactionRequestDto dto)
         {
             var result = await _transactionService.CreateClientTransaction(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "ClientTransaction", result.ClientTransactionId.ToString(), "ClientTransaction created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "ClientTransaction", result.ClientTransactionId.ToString(), $"Logged commercial client inflow remittance transaction asset", GetIp());
             return CreatedAtAction(nameof(GetClientTransactionById), new { id = result.ClientTransactionId }, result);
         }
 
@@ -64,7 +64,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<ClientTransactionResponseDto>> UpdateClientTransaction(int id, [FromBody] ClientTransactionRequestDto dto)
         {
             var result = await _transactionService.UpdateClientTransaction(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "ClientTransaction", id.ToString(), "ClientTransaction updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "ClientTransaction", id.ToString(), $"Corrected entry data for client transaction record ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -73,7 +73,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> DeleteClientTransaction(int id)
         {
             await _transactionService.DeleteClientTransaction(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "ClientTransaction", id.ToString(), "ClientTransaction deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "ClientTransaction", id.ToString(), $"Voided billing accounting ledger line trace ID {id}", GetIp());
             return NoContent();
         }
 
@@ -81,7 +81,7 @@ namespace BuildManager.Controllers
 
         [HttpGet("supplier")]
         public async Task<ActionResult<IEnumerable<SupplierTransactionResponseDto>>> GetSupplierTransactions(
-            [FromQuery] int? clientId   = null,
+            [FromQuery] int? clientId = null,
             [FromQuery] int? supplierId = null)
             => Ok(await _transactionService.GetSupplierTransactions(clientId, supplierId));
 
@@ -94,7 +94,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<SupplierTransactionResponseDto>> CreateSupplierTransaction([FromBody] SupplierTransactionRequestDto dto)
         {
             var result = await _transactionService.CreateSupplierTransaction(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "SupplierTransaction", result.SupplierTransactionId.ToString(), "SupplierTransaction created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "SupplierTransaction", result.SupplierTransactionId.ToString(), $"Recorded merchant materials dispatch invoice expenditure line record", GetIp());
             return CreatedAtAction(nameof(GetSupplierTransactionById), new { id = result.SupplierTransactionId }, result);
         }
 
@@ -103,7 +103,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<SupplierTransactionResponseDto>> UpdateSupplierTransaction(int id, [FromBody] SupplierTransactionRequestDto dto)
         {
             var result = await _transactionService.UpdateSupplierTransaction(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "SupplierTransaction", id.ToString(), "SupplierTransaction updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "SupplierTransaction", id.ToString(), $"Updated entry processing trace for vendor balance account statement ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -112,7 +112,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> DeleteSupplierTransaction(int id)
         {
             await _transactionService.DeleteSupplierTransaction(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "SupplierTransaction", id.ToString(), "SupplierTransaction deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "SupplierTransaction", id.ToString(), $"Voided supplier payment record ledger route trace ID {id}", GetIp());
             return NoContent();
         }
 
@@ -120,7 +120,7 @@ namespace BuildManager.Controllers
 
         [HttpGet("subcontractor")]
         public async Task<ActionResult<IEnumerable<SubContractorTransactionResponseDto>>> GetSubContractorTransactions(
-            [FromQuery] int? clientId        = null,
+            [FromQuery] int? clientId = null,
             [FromQuery] int? subContractorId = null)
             => Ok(await _transactionService.GetSubContractorTransactions(clientId, subContractorId));
 
@@ -133,7 +133,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<SubContractorTransactionResponseDto>> CreateSubContractorTransaction([FromBody] SubContractorTransactionRequestDto dto)
         {
             var result = await _transactionService.CreateSubContractorTransaction(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "SubContractorTransaction", result.SubContractorTransactionId.ToString(), "SubContractorTransaction created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "SubContractorTransaction", result.SubContractorTransactionId.ToString(), $"Committed deployment disbursement payout for site partner subcontractor", GetIp());
             return CreatedAtAction(nameof(GetSubContractorTransactionById), new { id = result.SubContractorTransactionId }, result);
         }
 
@@ -142,7 +142,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<SubContractorTransactionResponseDto>> UpdateSubContractorTransaction(int id, [FromBody] SubContractorTransactionRequestDto dto)
         {
             var result = await _transactionService.UpdateSubContractorTransaction(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "SubContractorTransaction", id.ToString(), "SubContractorTransaction updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "SubContractorTransaction", id.ToString(), $"Updated ledger data properties for subcontractor payment allocation tracking entry ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -151,7 +151,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> DeleteSubContractorTransaction(int id)
         {
             await _transactionService.DeleteSubContractorTransaction(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "SubContractorTransaction", id.ToString(), "SubContractorTransaction deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "SubContractorTransaction", id.ToString(), $"Voided subcontractor work settlement record tracker ID {id}", GetIp());
             return NoContent();
         }
 
@@ -160,7 +160,7 @@ namespace BuildManager.Controllers
         [HttpGet("expense")]
         public async Task<ActionResult<IEnumerable<CompanyExpenseTransactionResponseDto>>> GetExpenseTransactions(
             [FromQuery] int? companyId = null,
-            [FromQuery] int? clientId  = null)
+            [FromQuery] int? clientId = null)
             => Ok(await _transactionService.GetCompanyExpenseTransactions(companyId, clientId));
 
         [HttpGet("expense/{id:int}")]
@@ -172,7 +172,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<CompanyExpenseTransactionResponseDto>> CreateExpenseTransaction([FromBody] CompanyExpenseTransactionRequestDto dto)
         {
             var result = await _transactionService.CreateCompanyExpenseTransaction(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "CompanyExpenseTransaction", result.CompanyExpenseTransactionId.ToString(), "ExpenseTransaction created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "CompanyExpenseTransaction", result.CompanyExpenseTransactionId.ToString(), $"Logged field operational petty expense debit balance", GetIp());
             return CreatedAtAction(nameof(GetExpenseTransactionById), new { id = result.CompanyExpenseTransactionId }, result);
         }
 
@@ -181,7 +181,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult<CompanyExpenseTransactionResponseDto>> UpdateExpenseTransaction(int id, [FromBody] CompanyExpenseTransactionRequestDto dto)
         {
             var result = await _transactionService.UpdateCompanyExpenseTransaction(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "CompanyExpenseTransaction", id.ToString(), "ExpenseTransaction updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "CompanyExpenseTransaction", id.ToString(), $"Corrected transaction trace entry configuration parameters for expense data item ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -190,7 +190,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> DeleteExpenseTransaction(int id)
         {
             await _transactionService.DeleteCompanyExpenseTransaction(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "CompanyExpenseTransaction", id.ToString(), "ExpenseTransaction deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "CompanyExpenseTransaction", id.ToString(), $"Voided structural field expense tracking log entry ID {id}", GetIp());
             return NoContent();
         }
     }

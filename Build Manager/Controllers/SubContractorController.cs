@@ -11,16 +11,16 @@ namespace BuildManager.Controllers
     public class SubContractorController : ControllerBase
     {
         private readonly ISubContractorService _subContractorService;
-        private readonly IAuditLogService      _auditLog;
+        private readonly IAuditLogService _auditLog;
 
         public SubContractorController(ISubContractorService subContractorService, IAuditLogService auditLog)
         {
             _subContractorService = subContractorService;
-            _auditLog             = auditLog;
+            _auditLog = auditLog;
         }
 
-        private string? GetIp()   => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string  GetUser() => User.Identity?.Name ?? "unknown";
+        private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
+        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<SubContractorResponseDto>>> GetAll()
@@ -31,20 +31,18 @@ namespace BuildManager.Controllers
             => Ok(await _subContractorService.GetById(id));
 
         [HttpPost]
-        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<SubContractorResponseDto>> Create([FromBody] SubContractorRequestDto dto)
         {
             var result = await _subContractorService.Create(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "SubContractor", result.SubContractorId.ToString(), "SubContractor created", GetIp());
+            await _auditLog.LogAsync(GetUser(), "CREATE", "SubContractor", result.SubContractorId.ToString(), $"Linked specialized trade firm subcontractor: {dto.SubContractorName}", GetIp());
             return CreatedAtAction(nameof(GetById), new { id = result.SubContractorId }, result);
         }
 
         [HttpPut("{id:int}")]
-        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<SubContractorResponseDto>> Update(int id, [FromBody] SubContractorRequestDto dto)
         {
             var result = await _subContractorService.Update(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "SubContractor", id.ToString(), "SubContractor updated", GetIp());
+            await _auditLog.LogAsync(GetUser(), "UPDATE", "SubContractor", id.ToString(), $"Updated service profile records for subcontractor ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -53,7 +51,7 @@ namespace BuildManager.Controllers
         public async Task<ActionResult> Delete(int id)
         {
             await _subContractorService.Delete(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "SubContractor", id.ToString(), "SubContractor deleted", GetIp());
+            await _auditLog.LogAsync(GetUser(), "DELETE", "SubContractor", id.ToString(), $"Archived field vendor track for labor partner ID {id}", GetIp());
             return NoContent();
         }
     }

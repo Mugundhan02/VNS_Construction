@@ -48,22 +48,22 @@ namespace BuildManager.Contexts
 
                 entity.OwnsOne(e => e.Address, address =>
                 {
-                    address.Property(a => a.PinCode).HasMaxLength(10);
-                });
+                    address.Property(adr => adr.PinCode).HasMaxLength(10);
+                }).Navigation(e => e.Address).IsRequired();
 
                 entity.OwnsOne(e => e.ContactInfo, contact =>
                 {
-                    contact.Property(c => c.PhoneNumber).HasMaxLength(20);
-                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
-                    contact.Property(c => c.EmailId).HasMaxLength(200);
-                });
+                    contact.Property(cnt => cnt.PhoneNumber).HasMaxLength(20);
+                    contact.Property(cnt => cnt.MobileNumber).HasMaxLength(20);
+                    contact.Property(cnt => cnt.EmailId).HasMaxLength(200);
+                }).Navigation(e => e.ContactInfo).IsRequired();
 
                 entity.OwnsOne(e => e.IdentityDetails, identity =>
                 {
-                    identity.Property(i => i.PanCardNumber).HasMaxLength(20);
-                    identity.Property(i => i.TinNumber).HasMaxLength(30);
-                    identity.Property(i => i.CstNumber).HasMaxLength(30);
-                });
+                    identity.Property(idnt => idnt.PanCardNumber).HasMaxLength(20);
+                    identity.Property(idnt => idnt.TinNumber).HasMaxLength(30);
+                    identity.Property(idnt => idnt.CstNumber).HasMaxLength(30);
+                }).Navigation(e => e.IdentityDetails).IsRequired();
             });
 
             // ── RefreshToken ──
@@ -147,23 +147,32 @@ namespace BuildManager.Contexts
 
                 entity.OwnsOne(e => e.Address, address =>
                 {
-                    address.Property(a => a.PinCode).HasMaxLength(10);
-                });
+                    address.Property(adr => adr.PinCode).HasMaxLength(10);
+                }).Navigation(e => e.Address).IsRequired();
 
                 entity.OwnsOne(e => e.ContactInfo, contact =>
                 {
-                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
-                    contact.Property(c => c.EmailId).HasMaxLength(200);
-                });
+                    contact.Property(cnt => cnt.MobileNumber).HasMaxLength(20);
+                    contact.Property(cnt => cnt.EmailId).HasMaxLength(200);
+                }).Navigation(e => e.ContactInfo).IsRequired();
 
                 entity.OwnsOne(e => e.IdentityDetails, identity =>
                 {
-                    identity.Property(i => i.PanCardNumber).HasMaxLength(20);
-                });
+                    identity.Property(idnt => idnt.PanCardNumber).HasMaxLength(20);
+                }).Navigation(e => e.IdentityDetails).IsRequired();
 
-                entity.Property(e => e.EstimateUnit).HasPrecision(18, 4);
-                entity.Property(e => e.EstimateRate).HasPrecision(18, 4);
-                entity.Property(e => e.EstimateAmount).HasPrecision(18, 2);
+                // Fixed: Added explicit empty configuration block
+                entity.OwnsOne(e => e.BankDetails, bank =>
+                {
+                    // Leaves default mapping rules intact smoothly
+                }).Navigation(e => e.BankDetails).IsRequired();
+
+                entity.OwnsOne(e => e.EstimateDetails, estimate =>
+                {
+                    estimate.Property(est => est.Unit).HasPrecision(18, 4);
+                    estimate.Property(est => est.Rate).HasPrecision(18, 4);
+                    estimate.Property(est => est.Amount).HasPrecision(18, 2);
+                }).Navigation(e => e.EstimateDetails).IsRequired();
             });
 
             // ── Supplier ──
@@ -174,14 +183,23 @@ namespace BuildManager.Contexts
 
                 entity.OwnsOne(e => e.Address, address =>
                 {
-                    address.Property(a => a.PinCode).HasMaxLength(10);
-                });
+                    address.Property(adr => adr.PinCode).HasMaxLength(10);
+                }).Navigation(e => e.Address).IsRequired();
 
                 entity.OwnsOne(e => e.ContactInfo, contact =>
                 {
-                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
-                    contact.Property(c => c.EmailId).HasMaxLength(200);
-                });
+                    contact.Property(cnt => cnt.MobileNumber).HasMaxLength(20);
+                    contact.Property(cnt => cnt.EmailId).HasMaxLength(200);
+                }).Navigation(e => e.ContactInfo).IsRequired();
+
+                // Fixed: Added explicit empty configuration blocks
+                entity.OwnsOne(e => e.IdentityDetails, identity =>
+                {
+                }).Navigation(e => e.IdentityDetails).IsRequired();
+
+                entity.OwnsOne(e => e.BankDetails, bank =>
+                {
+                }).Navigation(e => e.BankDetails).IsRequired();
             });
 
             // ── SubContractor ──
@@ -192,18 +210,28 @@ namespace BuildManager.Contexts
 
                 entity.OwnsOne(e => e.Address, address =>
                 {
-                    address.Property(a => a.PinCode).HasMaxLength(10);
-                });
+                    address.Property(adr => adr.PinCode).HasMaxLength(10);
+                }).Navigation(e => e.Address).IsRequired();
 
                 entity.OwnsOne(e => e.ContactInfo, contact =>
                 {
-                    contact.Property(c => c.MobileNumber).HasMaxLength(20);
-                });
+                    contact.Property(cnt => cnt.MobileNumber).HasMaxLength(20);
+                }).Navigation(e => e.ContactInfo).IsRequired();
+
+                // Fixed: Added explicit empty configuration blocks
+                entity.OwnsOne(e => e.IdentityDetails, identity =>
+                {
+                }).Navigation(e => e.IdentityDetails).IsRequired();
+
+                entity.OwnsOne(e => e.BankDetails, bank =>
+                {
+                }).Navigation(e => e.BankDetails).IsRequired();
 
                 entity.OwnsOne(e => e.WorkDetails, work =>
                 {
                     work.Property(w => w.Rate).HasPrecision(18, 4);
-                });
+                    work.Property(w => w.Esr).HasPrecision(18, 2);
+                }).Navigation(e => e.WorkDetails).IsRequired();
             });
 
             // ── Material ──

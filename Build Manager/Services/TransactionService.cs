@@ -8,16 +8,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildManager.Services
 {
-    public class TransactionService : ITransactionService
+    // Refactored to use Primary Constructor syntax (Fixes IDE0290)
+    public class TransactionService(BuildManagerDbContext context, IMapper mapper) : ITransactionService
     {
-        private readonly BuildManagerDbContext _context;
-        private readonly IMapper _mapper;
-
-        public TransactionService(BuildManagerDbContext context, IMapper mapper)
-        {
-            _context = context;
-            _mapper  = mapper;
-        }
+        private readonly BuildManagerDbContext _context = context;
+        private readonly IMapper _mapper = mapper;
 
         // ── Client Transactions ──────────────────────────────────────────────
 
@@ -322,10 +317,10 @@ namespace BuildManager.Services
 
             return new CompanySummaryDto
             {
-                CompanyName    = company?.CompanyName ?? string.Empty,
-                CreditsAmount  = totalCredits,
-                DebitsAmount   = totalDebits,
-                BalanceAmount  = totalCredits - totalDebits
+                CompanyName = company?.CompanyName ?? string.Empty,
+                CreditsAmount = totalCredits,
+                DebitsAmount = totalDebits,
+                BalanceAmount = totalCredits - totalDebits
             };
         }
 
@@ -336,23 +331,24 @@ namespace BuildManager.Services
                 .FirstOrDefaultAsync(c => c.ClientId == clientId)
                 ?? throw new EntityNotFoundException("Client", clientId);
 
-            var credits  = await _context.ClientTransactions.Where(t => t.ClientId == clientId).SumAsync(t => t.CreditAmount);
-            var debits   = await _context.ClientTransactions.Where(t => t.ClientId == clientId).SumAsync(t => t.DebitAmount);
+            var credits = await _context.ClientTransactions.Where(t => t.ClientId == clientId).SumAsync(t => t.CreditAmount);
+            var debits = await _context.ClientTransactions.Where(t => t.ClientId == clientId).SumAsync(t => t.DebitAmount);
             var received = await _context.SupplierTransactions.Where(t => t.ClientId == clientId).SumAsync(t => t.PaidAmount);
             var expenses = await _context.SubContractorTransactions.Where(t => t.ClientId == clientId).SumAsync(t => t.PaidAmount);
 
             return new ClientSummaryDto
             {
-                ClientId                 = client.ClientId,
-                ClientName               = client.ClientName,
-                CreditsAmount            = credits,
-                DebitsAmount             = debits,
-                BalanceAmount            = credits - debits,
-                EstimateUnits            = client.EstimateUnit ?? 0,
-                EstimateRate             = client.EstimateRate ?? 0,
-                EstimateAmount           = client.EstimateAmount ?? 0,
-                EstimateAmountReceived   = received,
-                EstimateAmountExpenses   = expenses
+                ClientId = client.ClientId,
+                ClientName = client.ClientName,
+                CreditsAmount = credits,
+                DebitsAmount = debits,
+                BalanceAmount = credits - debits,
+                // Fixed to match Option A's clean fields: .Unit, .Rate, and .Amount
+                EstimateUnits = client.EstimateDetails?.Unit ?? 0,
+                EstimateRate = client.EstimateDetails?.Rate ?? 0,
+                EstimateAmount = client.EstimateDetails?.Amount ?? 0,
+                EstimateAmountReceived = received,
+                EstimateAmountExpenses = expenses
             };
         }
 
@@ -364,10 +360,10 @@ namespace BuildManager.Services
                 .GroupBy(t => new { t.SupplierId, t.Supplier.SupplierName })
                 .Select(g => new SupplierSummaryDto
                 {
-                    SupplierId    = g.Key.SupplierId,
-                    SupplierName  = g.Key.SupplierName,
+                    SupplierId = g.Key.SupplierId,
+                    SupplierName = g.Key.SupplierName,
                     PayableAmount = g.Sum(t => t.Amount),
-                    PaidAmount    = g.Sum(t => t.PaidAmount),
+                    PaidAmount = g.Sum(t => t.PaidAmount),
                     BalanceAmount = g.Sum(t => t.Amount) - g.Sum(t => t.PaidAmount)
                 })
                 .OrderBy(s => s.SupplierName)
@@ -382,11 +378,11 @@ namespace BuildManager.Services
                 .GroupBy(t => new { t.SubContractorId, t.SubContractor.SubContractorName })
                 .Select(g => new SubContractorSummaryDto
                 {
-                    SubContractorId   = g.Key.SubContractorId,
+                    SubContractorId = g.Key.SubContractorId,
                     SubContractorName = g.Key.SubContractorName,
-                    PayableAmount     = g.Sum(t => t.Amount),
-                    PaidAmount        = g.Sum(t => t.PaidAmount),
-                    BalanceAmount     = g.Sum(t => t.Amount) - g.Sum(t => t.PaidAmount)
+                    PayableAmount = g.Sum(t => t.Amount),
+                    PaidAmount = g.Sum(t => t.PaidAmount),
+                    BalanceAmount = g.Sum(t => t.Amount) - g.Sum(t => t.PaidAmount)
                 })
                 .OrderBy(s => s.SubContractorName)
                 .ToListAsync();

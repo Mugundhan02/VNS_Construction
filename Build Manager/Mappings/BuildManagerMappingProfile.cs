@@ -10,7 +10,14 @@ namespace BuildManager.Mappings
         {
             // ── Company ───────────────────────────────────────────────────────
             CreateMap<CompanyRequestDto, Company>();
-            CreateMap<Company, CompanyResponseDto>();
+            CreateMap<Company, CompanyResponseDto>()
+                .ForMember(d => d.PinCode, opt => opt.MapFrom(s => s.Address != null ? s.Address.PinCode : string.Empty))
+                .ForMember(d => d.PhoneNumber, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.PhoneNumber : string.Empty))
+                .ForMember(d => d.MobileNumber, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.MobileNumber : string.Empty))
+                .ForMember(d => d.EmailId, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.EmailId : string.Empty))
+                .ForMember(d => d.PanCardNumber, opt => opt.MapFrom(s => s.IdentityDetails != null ? s.IdentityDetails.PanCardNumber : string.Empty))
+                .ForMember(d => d.TinNumber, opt => opt.MapFrom(s => s.IdentityDetails != null ? s.IdentityDetails.TinNumber : string.Empty))
+                .ForMember(d => d.CstNumber, opt => opt.MapFrom(s => s.IdentityDetails != null ? s.IdentityDetails.CstNumber : string.Empty));
 
             // ── CompanyUser ───────────────────────────────────────────────────
             CreateMap<CompanyUserRequestDto, CompanyUser>()
@@ -21,7 +28,7 @@ namespace BuildManager.Mappings
 
             // ── CompanyBank ───────────────────────────────────────────────────
             CreateMap<CompanyBankRequestDto, CompanyBank>();
-            CreateMap<CompanyBank, CompanyBankResponseDto>();      // AccountNumber intentionally absent from response DTO
+            CreateMap<CompanyBank, CompanyBankResponseDto>();
 
             // ── OfficeExpense ─────────────────────────────────────────────────
             CreateMap<OfficeExpenseRequestDto, OfficeExpense>();
@@ -41,17 +48,28 @@ namespace BuildManager.Mappings
 
             // ── Client ────────────────────────────────────────────────────────
             CreateMap<ClientRequestDto, Client>();
-            CreateMap<Client, ClientResponseDto>();               // Response omits DoorNo, FaxNumber, AccountNumber, TaxIDs
+            CreateMap<Client, ClientResponseDto>()
+                .ForMember(d => d.PinCode, opt => opt.MapFrom(s => s.Address != null ? s.Address.PinCode : string.Empty))
+                .ForMember(d => d.MobileNumber, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.MobileNumber : string.Empty))
+                .ForMember(d => d.EmailId, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.EmailId : string.Empty))
+                // Fixed to cleanly target Option A properties (.Unit, .Rate, .Amount)
+                .ForMember(d => d.EstimateUnit, opt => opt.MapFrom(s => s.EstimateDetails != null ? s.EstimateDetails.Unit : 0))
+                .ForMember(d => d.EstimateRate, opt => opt.MapFrom(s => s.EstimateDetails != null ? s.EstimateDetails.Rate : 0))
+                .ForMember(d => d.EstimateAmount, opt => opt.MapFrom(s => s.EstimateDetails != null ? s.EstimateDetails.Amount : 0));
 
             // ── Supplier ──────────────────────────────────────────────────────
             CreateMap<SupplierRequestDto, Supplier>();
-            CreateMap<Supplier, SupplierResponseDto>();           // Response omits DoorNo, FaxNumber, AccountNumber, TaxIDs
+            CreateMap<Supplier, SupplierResponseDto>()
+                .ForMember(d => d.PinCode, opt => opt.MapFrom(s => s.Address != null ? s.Address.PinCode : string.Empty))
+                .ForMember(d => d.MobileNumber, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.MobileNumber : string.Empty))
+                .ForMember(d => d.EmailId, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.EmailId : string.Empty));
 
             // ── SubContractor ─────────────────────────────────────────────────
             CreateMap<SubContractorRequestDto, SubContractor>();
-            CreateMap<SubContractor, SubContractorResponseDto>()  // Response omits DoorNo, FaxNumber, AccountNumber, TaxIDs, ESR
-                .ForMember(d => d.Rate,
-                           opt => opt.MapFrom(s => s.Rate));
+            CreateMap<SubContractor, SubContractorResponseDto>()
+                .ForMember(d => d.PinCode, opt => opt.MapFrom(s => s.Address != null ? s.Address.PinCode : string.Empty))
+                .ForMember(d => d.MobileNumber, opt => opt.MapFrom(s => s.ContactInfo != null ? s.ContactInfo.MobileNumber : string.Empty))
+                .ForMember(d => d.Rate, opt => opt.MapFrom(s => s.WorkDetails != null ? s.WorkDetails.Rate : 0));
 
             // ── Material ──────────────────────────────────────────────────────
             CreateMap<MaterialRequestDto, Material>();
@@ -84,7 +102,7 @@ namespace BuildManager.Mappings
                            opt => opt.MapFrom(s => s.PaymentType != null ? s.PaymentType.PaymentTypeName : null))
                 .ForMember(d => d.ToWhomName,
                            opt => opt.MapFrom(s => s.ToWhom != null ? s.ToWhom.WhomName : null))
-                .ForMember(d => d.BalanceAmount, opt => opt.Ignore());   // computed property
+                .ForMember(d => d.BalanceAmount, opt => opt.Ignore());
 
             // ── SubContractorTransaction ──────────────────────────────────────
             CreateMap<SubContractorTransactionRequestDto, SubContractorTransaction>();
@@ -99,7 +117,7 @@ namespace BuildManager.Mappings
                            opt => opt.MapFrom(s => s.PaymentType != null ? s.PaymentType.PaymentTypeName : null))
                 .ForMember(d => d.ToWhomName,
                            opt => opt.MapFrom(s => s.ToWhom != null ? s.ToWhom.WhomName : null))
-                .ForMember(d => d.BalanceAmount, opt => opt.Ignore());   // computed property
+                .ForMember(d => d.BalanceAmount, opt => opt.Ignore());
 
             // ── CompanyExpenseTransaction ─────────────────────────────────────
             CreateMap<CompanyExpenseTransactionRequestDto, CompanyExpenseTransaction>();
@@ -114,7 +132,7 @@ namespace BuildManager.Mappings
                            opt => opt.MapFrom(s => s.PaymentType != null ? s.PaymentType.PaymentTypeName : null))
                 .ForMember(d => d.ToWhomName,
                            opt => opt.MapFrom(s => s.ToWhom != null ? s.ToWhom.WhomName : null))
-                .ForMember(d => d.BalanceAmount, opt => opt.Ignore());   // computed property
+                .ForMember(d => d.BalanceAmount, opt => opt.Ignore());
         }
     }
 }

@@ -19,32 +19,44 @@ namespace BuildManager.Controllers
             _auditLog = auditLog;
         }
 
+        private string GetUsername() => User.Identity?.Name ?? "unknown";
         private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
+        [Authorize(Roles = "User,Admin,Owner")]
         public async Task<ActionResult<IEnumerable<MaterialResponseDto>>> GetAll()
-            => Ok(await _materialService.GetAll());
+        {
+            var result = await _materialService.GetAll();
+            return Ok(result);
+        }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "User,Admin,Owner")]
         public async Task<ActionResult<MaterialResponseDto>> GetById(int id)
-            => Ok(await _materialService.GetById(id));
+        {
+            var result = await _materialService.GetById(id);
+            return Ok(result);
+        }
 
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<MaterialResponseDto>> Create([FromBody] MaterialRequestDto dto)
         {
+            var username = GetUsername();
             var result = await _materialService.Create(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "Material", result.MaterialId.ToString(), $"Logged raw materials batch arrival: {dto.MaterialName}", GetIp());
-            return CreatedAtAction(nameof(GetById), new { id = result.MaterialId }, result);
+            await _auditLog.LogAsync(username, "CREATE", "Material", result.MaterialId.ToString(),
+                "Logged raw materials batch arrival", GetIp());
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<MaterialResponseDto>> Update(int id, [FromBody] MaterialRequestDto dto)
         {
+            var username = GetUsername();
             var result = await _materialService.Update(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "Material", id.ToString(), $"Adjusted volume density data metrics for material batch resource ID {id}", GetIp());
+            await _auditLog.LogAsync(username, "UPDATE", "Material", id.ToString(),
+                $"Adjusted volume density data metrics for material batch resource ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -52,8 +64,10 @@ namespace BuildManager.Controllers
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult> Delete(int id)
         {
+            var username = GetUsername();
             await _materialService.Delete(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "Material", id.ToString(), $"Purged volume tracking data profiles for inventory log ID {id}", GetIp());
+            await _auditLog.LogAsync(username, "DELETE", "Material", id.ToString(),
+                $"Purged volume tracking data profiles for inventory log ID {id}", GetIp());
             return NoContent();
         }
     }

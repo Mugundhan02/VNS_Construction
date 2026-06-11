@@ -19,33 +19,44 @@ namespace BuildManager.Controllers
             _auditLog = auditLog;
         }
 
+        private string GetUsername() => User.Identity?.Name ?? "unknown";
         private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
+        [Authorize(Roles = "User,Admin,Owner")]
         public async Task<ActionResult<IEnumerable<JobWorkResponseDto>>> GetAll()
-            => Ok(await _jobWorkService.GetAll());
+        {
+            var result = await _jobWorkService.GetAll();
+            return Ok(result);
+        }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "User,Admin,Owner")]
         public async Task<ActionResult<JobWorkResponseDto>> GetById(int id)
-            => Ok(await _jobWorkService.GetById(id));
+        {
+            var result = await _jobWorkService.GetById(id);
+            return Ok(result);
+        }
 
         [HttpPost]
         [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<JobWorkResponseDto>> Create([FromBody] JobWorkRequestDto dto)
         {
+            var username = GetUsername();
             var result = await _jobWorkService.Create(dto);
-            // FIXED: Removed dto.TaskName to resolve compile error CS1061
-            await _auditLog.LogAsync(GetUser(), "CREATE", "JobWork", result.JobWorkId.ToString(), "Assigned site work schedule task", GetIp());
-            return CreatedAtAction(nameof(GetById), new { id = result.JobWorkId }, result);
+            await _auditLog.LogAsync(username, "CREATE", "JobWork", result.JobWorkId.ToString(),
+                "Assigned site work schedule task", GetIp());
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<JobWorkResponseDto>> Update(int id, [FromBody] JobWorkRequestDto dto)
         {
+            var username = GetUsername();
             var result = await _jobWorkService.Update(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "JobWork", id.ToString(), $"Modified operational milestones for job work task ID {id}", GetIp());
+            await _auditLog.LogAsync(username, "UPDATE", "JobWork", id.ToString(),
+                $"Modified operational milestones for job work task ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -53,8 +64,10 @@ namespace BuildManager.Controllers
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult> Delete(int id)
         {
+            var username = GetUsername();
             await _jobWorkService.Delete(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "JobWork", id.ToString(), $"Dropped site work order blueprint trace ID {id}", GetIp());
+            await _auditLog.LogAsync(username, "DELETE", "JobWork", id.ToString(),
+                $"Dropped site work order blueprint trace ID {id}", GetIp());
             return NoContent();
         }
     }

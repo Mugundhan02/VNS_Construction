@@ -8,7 +8,7 @@ namespace BuildManager.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Owner,Admin")]
+    [Authorize]
     public class ClientController : ControllerBase
     {
         private readonly IClientService _clientService;
@@ -20,30 +20,44 @@ namespace BuildManager.Controllers
             _auditLog = auditLog;
         }
 
+        private string GetUsername() => User.Identity?.Name ?? "unknown";
         private string? GetIp() => HttpContext.Connection.RemoteIpAddress?.ToString();
-        private string GetUser() => User.Identity?.Name ?? "unknown";
 
         [HttpGet]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<IEnumerable<ClientResponseDto>>> GetAll()
-            => Ok(await _clientService.GetAll());
+        {
+            var result = await _clientService.GetAll();
+            return Ok(result);
+        }
 
         [HttpGet("{id:int}")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<ClientResponseDto>> GetById(int id)
-            => Ok(await _clientService.GetById(id));
+        {
+            var result = await _clientService.GetById(id);
+            return Ok(result);
+        }
 
         [HttpPost]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<ClientResponseDto>> Create([FromBody] ClientRequestDto dto)
         {
+            var username = GetUsername();
             var result = await _clientService.Create(dto);
-            await _auditLog.LogAsync(GetUser(), "CREATE", "Client", result.ClientId.ToString(), $"Registered construction contract client: {dto.ClientName}", GetIp());
-            return CreatedAtAction(nameof(GetById), new { id = result.ClientId }, result);
+            await _auditLog.LogAsync(username, "CREATE", "Client", result.ClientId.ToString(),
+                $"Registered construction contract client: {dto.ClientName}", GetIp());
+            return Ok(result);
         }
 
         [HttpPut("{id:int}")]
+        [Authorize(Roles = "Owner,Admin")]
         public async Task<ActionResult<ClientResponseDto>> Update(int id, [FromBody] ClientRequestDto dto)
         {
+            var username = GetUsername();
             var result = await _clientService.Update(id, dto);
-            await _auditLog.LogAsync(GetUser(), "UPDATE", "Client", id.ToString(), $"Updated master records for client ID {id}", GetIp());
+            await _auditLog.LogAsync(username, "UPDATE", "Client", id.ToString(),
+                $"Updated master records for client ID {id}", GetIp());
             return Ok(result);
         }
 
@@ -51,8 +65,10 @@ namespace BuildManager.Controllers
         [Authorize(Roles = "Owner")]
         public async Task<ActionResult> Delete(int id)
         {
+            var username = GetUsername();
             await _clientService.Delete(id);
-            await _auditLog.LogAsync(GetUser(), "DELETE", "Client", id.ToString(), $"Archived contract client registry track ID {id}", GetIp());
+            await _auditLog.LogAsync(username, "DELETE", "Client", id.ToString(),
+                $"Archived contract client registry track ID {id}", GetIp());
             return NoContent();
         }
     }

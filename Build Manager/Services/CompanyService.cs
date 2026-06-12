@@ -11,12 +11,12 @@ namespace BuildManager.Services
     public class CompanyService : ICompanyService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly IMapper               _mapper;
+        private readonly IMapper _mapper;
 
         public CompanyService(BuildManagerDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<CompanyResponseDto>> GetAll()

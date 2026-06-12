@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildManager.Services
 {
-    // Refactored to use Primary Constructor syntax (Fixes IDE0290)
     public class TransactionService(BuildManagerDbContext context, IMapper mapper) : ITransactionService
     {
         private readonly BuildManagerDbContext _context = context;
@@ -72,8 +71,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteClientTransaction(int id)
         {
-            var entity = await _context.ClientTransactions.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.ClientTransactions.FindAsync(id)
+                         ?? throw new EntityNotFoundException("ClientTransaction", id);
+
             _context.ClientTransactions.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -81,8 +81,7 @@ namespace BuildManager.Services
 
         // ── Supplier Transactions ────────────────────────────────────────────
 
-        public async Task<IEnumerable<SupplierTransactionResponseDto>> GetSupplierTransactions(
-            int? clientId = null, int? supplierId = null)
+        public async Task<IEnumerable<SupplierTransactionResponseDto>> GetSupplierTransactions(int? clientId = null, int? supplierId = null)
         {
             var query = _context.SupplierTransactions
                 .AsNoTracking()
@@ -145,8 +144,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteSupplierTransaction(int id)
         {
-            var entity = await _context.SupplierTransactions.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.SupplierTransactions.FindAsync(id)
+                         ?? throw new EntityNotFoundException("SupplierTransaction", id);
+
             _context.SupplierTransactions.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -154,8 +154,7 @@ namespace BuildManager.Services
 
         // ── SubContractor Transactions ───────────────────────────────────────
 
-        public async Task<IEnumerable<SubContractorTransactionResponseDto>> GetSubContractorTransactions(
-            int? clientId = null, int? subContractorId = null)
+        public async Task<IEnumerable<SubContractorTransactionResponseDto>> GetSubContractorTransactions(int? clientId = null, int? subContractorId = null)
         {
             var query = _context.SubContractorTransactions
                 .AsNoTracking()
@@ -218,8 +217,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteSubContractorTransaction(int id)
         {
-            var entity = await _context.SubContractorTransactions.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.SubContractorTransactions.FindAsync(id)
+                         ?? throw new EntityNotFoundException("SubContractorTransaction", id);
+
             _context.SubContractorTransactions.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -227,8 +227,7 @@ namespace BuildManager.Services
 
         // ── Company Expense Transactions ─────────────────────────────────────
 
-        public async Task<IEnumerable<CompanyExpenseTransactionResponseDto>> GetCompanyExpenseTransactions(
-            int? companyId = null, int? clientId = null)
+        public async Task<IEnumerable<CompanyExpenseTransactionResponseDto>> GetCompanyExpenseTransactions(int? companyId = null, int? clientId = null)
         {
             var query = _context.CompanyExpenseTransactions
                 .AsNoTracking()
@@ -291,8 +290,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteCompanyExpenseTransaction(int id)
         {
-            var entity = await _context.CompanyExpenseTransactions.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.CompanyExpenseTransactions.FindAsync(id)
+                         ?? throw new EntityNotFoundException("CompanyExpenseTransaction", id);
+
             _context.CompanyExpenseTransactions.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -307,9 +307,7 @@ namespace BuildManager.Services
                 .FirstOrDefaultAsync(c => c.CompanyId == companyId);
 
             var totalCredits = await _context.ClientTransactions
-                .Where(t => _context.Clients
-                    .Where(c => c.ClientId == t.ClientId)
-                    .Any())
+                .Where(t => _context.Clients.Any(c => c.ClientId == t.ClientId))
                 .SumAsync(t => t.CreditAmount);
 
             var totalDebits = await _context.ClientTransactions
@@ -343,7 +341,6 @@ namespace BuildManager.Services
                 CreditsAmount = credits,
                 DebitsAmount = debits,
                 BalanceAmount = credits - debits,
-                // Fixed to match Option A's clean fields: .Unit, .Rate, and .Amount
                 EstimateUnits = client.EstimateDetails?.Unit ?? 0,
                 EstimateRate = client.EstimateDetails?.Rate ?? 0,
                 EstimateAmount = client.EstimateDetails?.Amount ?? 0,

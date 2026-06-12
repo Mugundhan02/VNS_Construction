@@ -14,23 +14,25 @@ namespace BuildManager.Services
         }
 
         public async Task LogAsync(
-            string  userName,
-            string  action,
-            string  entityType,
+            string userName,
+            string action,
+            string entityType,
             string? entityId,
             string? description,
             string? ipAddress)
         {
-            _context.AuditLogs.Add(new AuditLog
+            var auditEntry = new AuditLog
             {
-                UserName    = userName,
-                Action      = action,
-                EntityType  = entityType,
-                EntityId    = entityId,
+                UserName = userName,
+                Action = action,
+                EntityType = entityType,
+                EntityId = entityId,
                 Description = description,
-                IpAddress   = ipAddress,
-                CreatedAt   = DateTime.UtcNow
-            });
+                IpAddress = ipAddress,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.AuditLogs.Add(auditEntry);
             await _context.SaveChangesAsync();
         }
     }

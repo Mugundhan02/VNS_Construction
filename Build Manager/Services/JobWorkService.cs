@@ -11,12 +11,12 @@ namespace BuildManager.Services
     public class JobWorkService : IJobWorkService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly IMapper               _mapper;
+        private readonly IMapper _mapper;
 
         public JobWorkService(BuildManagerDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<JobWorkResponseDto>> GetAll()

@@ -8,10 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BuildManager.Services
 {
-    /// <summary>
-    /// Handles all simple lookup masters:
-    /// PaymentType, Whom, OfficeExpense, CompanyBank, InstallmentTerm.
-    /// </summary>
     public class LookupService : ILookupService
     {
         private readonly BuildManagerDbContext _context;
@@ -20,7 +16,7 @@ namespace BuildManager.Services
         public LookupService(BuildManagerDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
         // ── Payment Types ────────────────────────────────────────────────────
@@ -46,6 +42,7 @@ namespace BuildManager.Services
         {
             var entity = await _context.PaymentTypes.FindAsync(id)
                          ?? throw new EntityNotFoundException("PaymentType", id);
+
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<PaymentTypeResponseDto>(entity);
@@ -53,8 +50,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeletePaymentType(int id)
         {
-            var entity = await _context.PaymentTypes.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.PaymentTypes.FindAsync(id)
+                         ?? throw new EntityNotFoundException("PaymentType", id);
+
             _context.PaymentTypes.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -83,6 +81,7 @@ namespace BuildManager.Services
         {
             var entity = await _context.Whoms.FindAsync(id)
                          ?? throw new EntityNotFoundException("Whom", id);
+
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<WhomResponseDto>(entity);
@@ -90,8 +89,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteWhom(int id)
         {
-            var entity = await _context.Whoms.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.Whoms.FindAsync(id)
+                         ?? throw new EntityNotFoundException("Whom", id);
+
             _context.Whoms.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -120,6 +120,7 @@ namespace BuildManager.Services
         {
             var entity = await _context.OfficeExpenses.FindAsync(id)
                          ?? throw new EntityNotFoundException("OfficeExpense", id);
+
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<OfficeExpenseResponseDto>(entity);
@@ -127,8 +128,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteOfficeExpense(int id)
         {
-            var entity = await _context.OfficeExpenses.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.OfficeExpenses.FindAsync(id)
+                         ?? throw new EntityNotFoundException("OfficeExpense", id);
+
             _context.OfficeExpenses.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -158,6 +160,7 @@ namespace BuildManager.Services
         {
             var entity = await _context.CompanyBanks.FindAsync(id)
                          ?? throw new EntityNotFoundException("CompanyBank", id);
+
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<CompanyBankResponseDto>(entity);
@@ -165,8 +168,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteCompanyBank(int id)
         {
-            var entity = await _context.CompanyBanks.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.CompanyBanks.FindAsync(id)
+                         ?? throw new EntityNotFoundException("CompanyBank", id);
+
             _context.CompanyBanks.Remove(entity);
             await _context.SaveChangesAsync();
             return true;
@@ -195,6 +199,7 @@ namespace BuildManager.Services
         {
             var entity = await _context.InstallmentTerms.FindAsync(id)
                          ?? throw new EntityNotFoundException("InstallmentTerm", id);
+
             _mapper.Map(dto, entity);
             await _context.SaveChangesAsync();
             return _mapper.Map<InstallmentTermResponseDto>(entity);
@@ -202,8 +207,9 @@ namespace BuildManager.Services
 
         public async Task<bool> DeleteInstallmentTerm(int id)
         {
-            var entity = await _context.InstallmentTerms.FindAsync(id);
-            if (entity is null) return false;
+            var entity = await _context.InstallmentTerms.FindAsync(id)
+                         ?? throw new EntityNotFoundException("InstallmentTerm", id);
+
             _context.InstallmentTerms.Remove(entity);
             await _context.SaveChangesAsync();
             return true;

@@ -3,6 +3,7 @@ using System.Security.Claims;
 using System.Text;
 using BuildManager.Interfaces;
 using BuildManager.Models;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 
 namespace BuildManager.Services
@@ -18,7 +19,7 @@ namespace BuildManager.Services
 
         public Task<string> GenerateToken(CompanyUser user)
         {
-            var jwtKey    = _configuration["Jwt:Key"]    ?? "BuildManager@VNSConstruction#SecretKey2024!";
+            var jwtKey = _configuration["Jwt:Key"] ?? "BuildManager@VNSConstruction#SecretKey2024!";
             var jwtIssuer = _configuration["Jwt:Issuer"] ?? "BuildManager";
 
             var claims = new[]
@@ -30,14 +31,14 @@ namespace BuildManager.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
             };
 
-            var key   = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
-                issuer:             jwtIssuer,
-                audience:           jwtIssuer,
-                claims:             claims,
-                expires:            DateTime.UtcNow.AddHours(8),
+                issuer: jwtIssuer,
+                audience: jwtIssuer,
+                claims: claims,
+                expires: DateTime.UtcNow.AddHours(8),
                 signingCredentials: creds);
 
             return Task.FromResult(new JwtSecurityTokenHandler().WriteToken(token));

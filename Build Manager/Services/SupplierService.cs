@@ -11,12 +11,12 @@ namespace BuildManager.Services
     public class SupplierService : ISupplierService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly IMapper               _mapper;
+        private readonly IMapper _mapper;
 
         public SupplierService(BuildManagerDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<SupplierResponseDto>> GetAll()

@@ -11,12 +11,12 @@ namespace BuildManager.Services
     public class MaterialService : IMaterialService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly IMapper               _mapper;
+        private readonly IMapper _mapper;
 
         public MaterialService(BuildManagerDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<MaterialResponseDto>> GetAll()

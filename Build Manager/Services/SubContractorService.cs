@@ -11,12 +11,12 @@ namespace BuildManager.Services
     public class SubContractorService : ISubContractorService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly IMapper               _mapper;
+        private readonly IMapper _mapper;
 
         public SubContractorService(BuildManagerDbContext context, IMapper mapper)
         {
             _context = context;
-            _mapper  = mapper;
+            _mapper = mapper;
         }
 
         public async Task<IEnumerable<SubContractorResponseDto>> GetAll()

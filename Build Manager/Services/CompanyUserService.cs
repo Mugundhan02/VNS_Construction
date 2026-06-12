@@ -11,16 +11,16 @@ namespace BuildManager.Services
     public class CompanyUserService : ICompanyUserService
     {
         private readonly BuildManagerDbContext _context;
-        private readonly IMapper               _mapper;
-        private readonly IPasswordService      _passwordService;
+        private readonly IMapper _mapper;
+        private readonly IPasswordService _passwordService;
 
         public CompanyUserService(
             BuildManagerDbContext context,
-            IMapper               mapper,
-            IPasswordService      passwordService)
+            IMapper mapper,
+            IPasswordService passwordService)
         {
-            _context         = context;
-            _mapper          = mapper;
+            _context = context;
+            _mapper = mapper;
             _passwordService = passwordService;
         }
 
@@ -56,6 +56,7 @@ namespace BuildManager.Services
             var entity = _mapper.Map<CompanyUser>(dto);
             entity.PasswordHash = Convert.ToBase64String(hash);
             entity.PasswordSalt = Convert.ToBase64String(salt);
+            entity.IsActive = true;
 
             _context.CompanyUsers.Add(entity);
             await _context.SaveChangesAsync();
@@ -63,21 +64,14 @@ namespace BuildManager.Services
             return _mapper.Map<CompanyUserResponseDto>(entity);
         }
 
-        public async Task<CompanyUserResponseDto> Update(int id, CompanyUserRequestDto dto)
+        public async Task<CompanyUserResponseDto> Update(int id, CompanyUserUpdateDto dto)
         {
             var entity = await _context.CompanyUsers
                 .Include(u => u.Company)
                 .FirstOrDefaultAsync(u => u.CompanyUserId == id)
                 ?? throw new EntityNotFoundException("CompanyUser", id);
 
-            // Re-hash with a fresh salt on every update
-            var salt = _passwordService.GenerateSalt();
-            var hash = _passwordService.HashPassword(dto.Password, salt);
-
             _mapper.Map(dto, entity);
-            entity.PasswordHash = Convert.ToBase64String(hash);
-            entity.PasswordSalt = Convert.ToBase64String(salt);
-
             await _context.SaveChangesAsync();
             return _mapper.Map<CompanyUserResponseDto>(entity);
         }

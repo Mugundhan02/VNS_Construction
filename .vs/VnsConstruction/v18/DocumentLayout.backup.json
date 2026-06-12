@@ -3,36 +3,48 @@
   "WorkspaceRootPath": "D:\\Projects\\vns construction\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\isupplierservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\isupplierservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\models\\companyuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\models\\companyuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\isubcontractorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\isubcontractorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\imaterialservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\imaterialservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\ijobworkservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\ijobworkservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\iclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\iclientservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\icompanyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\icompanyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\icompanyuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\icompanyuserservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\interfaces\\iauthservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\dtos\\companyuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\dtos\\companyuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\lookupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\lookupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\dtos\\companydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\dtos\\companydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\dtos\\clientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\dtos\\clientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\companyusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\companyusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\transactioncontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -51,20 +63,36 @@
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\materialcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\lookupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\lookupcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\jobworkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\jobworkcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\companyusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\companyusercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\companycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\companycontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\controllers\\clientcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\services\\authservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\models\\companyuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\models\\companyuser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\dtos\\companyuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\dtos\\companyuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\dtos\\companydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\dtos\\companydto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\dtos\\clientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|solutionrelative:build manager\\dtos\\clientdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{A1B2C3D4-E5F6-7890-ABCD-EF1234567890}|Build Manager\\Build Manager.csproj|d:\\projects\\vns construction\\build manager\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -134,24 +162,151 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 2,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "CompanyUser.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Models\\CompanyUser.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Models\\CompanyUser.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Models\\CompanyUser.cs",
-              "RelativeToolTip": "Build Manager\\Models\\CompanyUser.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwB0AAABAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "ISupplierService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ISupplierService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\ISupplierService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ISupplierService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\ISupplierService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T07:26:52.805Z",
+              "WhenOpened": "2026-06-11T13:11:56.889Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ISubContractorService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ISubContractorService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\ISubContractorService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ISubContractorService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\ISubContractorService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T13:11:44.423Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "IMaterialService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IMaterialService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\IMaterialService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IMaterialService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\IMaterialService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T13:11:36.392Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "IJobWorkService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IJobWorkService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\IJobWorkService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IJobWorkService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\IJobWorkService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T13:11:27.138Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "IClientService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IClientService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\IClientService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IClientService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\IClientService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T13:11:11.7Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ICompanyService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ICompanyService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\ICompanyService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ICompanyService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\ICompanyService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T13:10:51.072Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ICompanyUserService.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ICompanyUserService.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Interfaces\\ICompanyUserService.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\ICompanyUserService.cs",
+              "RelativeToolTip": "Build Manager\\Interfaces\\ICompanyUserService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-11T13:10:35.043Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "TransactionController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\TransactionController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\TransactionController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\TransactionController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\TransactionController.cs",
+              "ViewState": "AgIAABEBAAAAAAAAAAAAwCUBAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:28:54.007Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "CompanyUserController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyUserController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\CompanyUserController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyUserController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\CompanyUserController.cs",
+              "ViewState": "AgIAADwAAAAAAAAAAAAAwFAAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:37:06.259Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAACIAAAAAAAAAAAAAwDYAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T05:41:19.846Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "LookupController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\LookupController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\LookupController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\LookupController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\LookupController.cs",
+              "ViewState": "AgIAAPoAAAAAAAAAAAAAwA4BAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:37:57.753Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
               "Title": "IAuthService.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Interfaces\\IAuthService.cs",
               "RelativeDocumentMoniker": "Build Manager\\Interfaces\\IAuthService.cs",
@@ -164,7 +319,79 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 12,
+              "Title": "SupplierController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SupplierController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\SupplierController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SupplierController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\SupplierController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T05:44:14.346Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "SubContractorController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SubContractorController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\SubContractorController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SubContractorController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\SubContractorController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:38:36.68Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "MaterialController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\MaterialController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\MaterialController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\MaterialController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\MaterialController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:28:33.05Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "JobWorkController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\JobWorkController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\JobWorkController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\JobWorkController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\JobWorkController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:28:15.754Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "CompanyController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\CompanyController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\CompanyController.cs",
+              "ViewState": "AgIAADUAAAAAAAAAAAAuwEkAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T05:41:46.436Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ClientController.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\ClientController.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Controllers\\ClientController.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\ClientController.cs",
+              "RelativeToolTip": "Build Manager\\Controllers\\ClientController.cs",
+              "ViewState": "AgIAAEEAAAAAAAAAAAAzwEoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-06-10T06:36:43.402Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
               "Title": "AuthService.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Services\\AuthService.cs",
               "RelativeDocumentMoniker": "Build Manager\\Services\\AuthService.cs",
@@ -172,38 +399,11 @@
               "RelativeToolTip": "Build Manager\\Services\\AuthService.cs",
               "ViewState": "AgIAAFoAAAAAAAAAAAAAwGsAAAA+AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T07:16:23.382Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T07:16:23.382Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ClientDto.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\ClientDto.cs",
-              "RelativeDocumentMoniker": "Build Manager\\DTOs\\ClientDto.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\ClientDto.cs",
-              "RelativeToolTip": "Build Manager\\DTOs\\ClientDto.cs",
-              "ViewState": "AgIAAMQAAAAAAAAAAAA0wOQAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T07:33:51.01Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 6,
-              "Title": "CompanyDto.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\CompanyDto.cs",
-              "RelativeDocumentMoniker": "Build Manager\\DTOs\\CompanyDto.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\CompanyDto.cs",
-              "RelativeToolTip": "Build Manager\\DTOs\\CompanyDto.cs",
-              "ViewState": "AgIAABQAAAAAAAAAAAAIwIwAAAAOAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T07:37:16.978Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 20,
               "Title": "CompanyUserDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\CompanyUserDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\CompanyUserDto.cs",
@@ -211,135 +411,47 @@
               "RelativeToolTip": "Build Manager\\DTOs\\CompanyUserDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAHMAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-09T07:38:25.512Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T07:38:25.512Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\AuthController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAACIAAAAAAAAAAAAAwDYAAAABAAAAAAAAAA==",
+              "DocumentIndex": 21,
+              "Title": "CompanyDto.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\CompanyDto.cs",
+              "RelativeDocumentMoniker": "Build Manager\\DTOs\\CompanyDto.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\CompanyDto.cs",
+              "RelativeToolTip": "Build Manager\\DTOs\\CompanyDto.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAAIwIwAAAAOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T05:41:19.846Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T07:37:16.978Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "ClientController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\ClientController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\ClientController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\ClientController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\ClientController.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAAAiwDoAAAABAAAAAAAAAA==",
+              "DocumentIndex": 22,
+              "Title": "ClientDto.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\ClientDto.cs",
+              "RelativeDocumentMoniker": "Build Manager\\DTOs\\ClientDto.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\ClientDto.cs",
+              "RelativeToolTip": "Build Manager\\DTOs\\ClientDto.cs",
+              "ViewState": "AgIAAMQAAAAAAAAAAAA0wOQAAAABAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:36:43.402Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-09T07:33:51.01Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "TransactionController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\TransactionController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\TransactionController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\TransactionController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\TransactionController.cs",
-              "ViewState": "AgIAALIAAAAAAAAAAAAiwMAAAAAXAAAAAAAAAA==",
+              "DocumentIndex": 19,
+              "Title": "CompanyUser.cs",
+              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Models\\CompanyUser.cs",
+              "RelativeDocumentMoniker": "Build Manager\\Models\\CompanyUser.cs",
+              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Models\\CompanyUser.cs",
+              "RelativeToolTip": "Build Manager\\Models\\CompanyUser.cs",
+              "ViewState": "AgIAABEAAAAAAAAAAAAAwB0AAABAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:28:54.007Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-10T07:26:52.805Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
-              "Title": "LookupController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\LookupController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\LookupController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\LookupController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\LookupController.cs",
-              "ViewState": "AgIAAHwAAAAAAAAAAAAAwL8AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:37:57.753Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "MaterialController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\MaterialController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\MaterialController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\MaterialController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\MaterialController.cs",
-              "ViewState": "AgIAACkAAAAAAAAAAAAiwDsAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:28:33.05Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "SubContractorController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SubContractorController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\SubContractorController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SubContractorController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\SubContractorController.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAiwDkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:38:36.68Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "SupplierController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SupplierController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\SupplierController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\SupplierController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\SupplierController.cs",
-              "ViewState": "AgIAACcAAAAAAAAAAAAiwDkAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T05:44:14.346Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
-              "Title": "JobWorkController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\JobWorkController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\JobWorkController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\JobWorkController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\JobWorkController.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAiwDwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:28:15.754Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "CompanyUserController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyUserController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\CompanyUserController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyUserController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\CompanyUserController.cs",
-              "ViewState": "AgIAACoAAAAAAAAAAAAiwDwAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T06:37:06.259Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "CompanyController.cs",
-              "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyController.cs",
-              "RelativeDocumentMoniker": "Build Manager\\Controllers\\CompanyController.cs",
-              "ToolTip": "D:\\Projects\\vns construction\\Build Manager\\Controllers\\CompanyController.cs",
-              "RelativeToolTip": "Build Manager\\Controllers\\CompanyController.cs",
-              "ViewState": "AgIAACgAAAAAAAAAAAAiwDoAAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-06-10T05:41:46.436Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 23,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Program.cs",
               "RelativeDocumentMoniker": "Build Manager\\Program.cs",
@@ -351,7 +463,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 25,
               "Title": "20260610052557_Inital.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Migrations\\20260610052557_Inital.cs",
               "RelativeDocumentMoniker": "Build Manager\\Migrations\\20260610052557_Inital.cs",
@@ -363,7 +475,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 26,
               "Title": "BuildManagerDbContext.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Contexts\\BuildManagerDbContext.cs",
               "RelativeDocumentMoniker": "Build Manager\\Contexts\\BuildManagerDbContext.cs",
@@ -375,7 +487,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 27,
               "Title": "20260610051857_intial.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Migrations\\20260610051857_intial.cs",
               "RelativeDocumentMoniker": "Build Manager\\Migrations\\20260610051857_intial.cs",
@@ -387,7 +499,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 24,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\appsettings.json",
               "RelativeDocumentMoniker": "Build Manager\\appsettings.json",
@@ -399,7 +511,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 29,
               "Title": "TransactionService.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Services\\TransactionService.cs",
               "RelativeDocumentMoniker": "Build Manager\\Services\\TransactionService.cs",
@@ -411,7 +523,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 28,
               "Title": "BuildManagerMappingProfile.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Mappings\\BuildManagerMappingProfile.cs",
               "RelativeDocumentMoniker": "Build Manager\\Mappings\\BuildManagerMappingProfile.cs",
@@ -423,7 +535,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 30,
               "Title": "Client.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Models\\Client.cs",
               "RelativeDocumentMoniker": "Build Manager\\Models\\Client.cs",
@@ -435,7 +547,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 31,
               "Title": "ExceptionHandlingMiddleware.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\Middlewares\\ExceptionHandlingMiddleware.cs",
               "RelativeDocumentMoniker": "Build Manager\\Middlewares\\ExceptionHandlingMiddleware.cs",
@@ -447,7 +559,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
+              "DocumentIndex": 32,
               "Title": "TransactionDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\TransactionDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\TransactionDto.cs",
@@ -459,7 +571,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 29,
+              "DocumentIndex": 36,
               "Title": "LookupDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\LookupDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\LookupDto.cs",
@@ -471,7 +583,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 28,
+              "DocumentIndex": 35,
               "Title": "MaterialDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\MaterialDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\MaterialDto.cs",
@@ -483,7 +595,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 30,
+              "DocumentIndex": 37,
               "Title": "JobWorkDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\JobWorkDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\JobWorkDto.cs",
@@ -495,7 +607,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 27,
+              "DocumentIndex": 34,
               "Title": "SubContractorDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\SubContractorDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\SubContractorDto.cs",
@@ -507,7 +619,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 33,
               "Title": "SupplierDto.cs",
               "DocumentMoniker": "D:\\Projects\\vns construction\\Build Manager\\DTOs\\SupplierDto.cs",
               "RelativeDocumentMoniker": "Build Manager\\DTOs\\SupplierDto.cs",

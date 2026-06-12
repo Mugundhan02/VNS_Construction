@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("BuildManager")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+319af5de0e337f6c43da385e352428e53e565ffa")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d2ba989e7e60456d5c0e4374c10bffc21aa882f2")]
 [assembly: System.Reflection.AssemblyProductAttribute("BuildManager")]
 [assembly: System.Reflection.AssemblyTitleAttribute("BuildManager")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

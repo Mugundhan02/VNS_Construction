@@ -1,7 +1,6 @@
 using BuildManager.DTOs;
 using BuildManager.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BuildManager.Controllers
@@ -54,9 +53,11 @@ namespace BuildManager.Controllers
 
         [HttpPut("{id:int}")]
         [Authorize(Roles = "Owner")]
-        public async Task<ActionResult<CompanyUserResponseDto>> Update(int id, [FromBody] CompanyUserRequestDto dto)
+        public async Task<ActionResult<CompanyUserResponseDto>> Update(int id, [FromBody] CompanyUserUpdateDto dto)
         {
             var username = GetUsername();
+
+            // FIXED: The signature and type matching now pass CompanyUserUpdateDto cleanly
             var result = await _companyUserService.Update(id, dto);
 
             await _auditLog.LogAsync(username, "UPDATE", "CompanyUser", id.ToString(),

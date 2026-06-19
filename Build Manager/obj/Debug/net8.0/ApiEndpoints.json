@@ -402,7 +402,7 @@
       },
       {
         "Name": "dto",
-        "Type": "BuildManager.DTOs.CompanyUserRequestDto",
+        "Type": "BuildManager.DTOs.CompanyUserUpdateDto",
         "IsRequired": true
       }
     ],

@@ -14,7 +14,6 @@ namespace BuildManager.Contexts
 
         public DbSet<Company> Companies { get; set; }
         public DbSet<CompanyUser> CompanyUsers { get; set; }
-        public DbSet<RefreshToken> RefreshTokens { get; set; }
         public DbSet<CompanyBank> CompanyBanks { get; set; }
         public DbSet<OfficeExpense> OfficeExpenses { get; set; }
         public DbSet<PaymentType> PaymentTypes { get; set; }
@@ -64,19 +63,6 @@ namespace BuildManager.Contexts
                     identity.Property(idnt => idnt.TinNumber).HasMaxLength(30);
                     identity.Property(idnt => idnt.CstNumber).HasMaxLength(30);
                 }).Navigation(e => e.IdentityDetails).IsRequired();
-            });
-
-            // ── RefreshToken ──
-            modelBuilder.Entity<RefreshToken>(entity =>
-            {
-                entity.HasKey(e => e.RefreshTokenId);
-                entity.Property(e => e.Token).IsRequired();
-                entity.HasIndex(e => e.Token).IsUnique();
-
-                entity.HasOne(e => e.CompanyUser)
-                      .WithMany(u => u.RefreshTokens)
-                      .HasForeignKey(e => e.CompanyUserId)
-                      .OnDelete(DeleteBehavior.Cascade);
             });
 
             // ── CompanyUser ──

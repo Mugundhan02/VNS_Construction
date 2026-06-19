@@ -695,17 +695,17 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompanyUserRequestDto"
+                "$ref": "#/components/schemas/CompanyUserUpdateDto"
               }
             },
             "text/json": {
               "schema": {
-                "$ref": "#/components/schemas/CompanyUserRequestDto"
+                "$ref": "#/components/schemas/CompanyUserUpdateDto"
               }
             },
             "application/*+json": {
               "schema": {
-                "$ref": "#/components/schemas/CompanyUserRequestDto"
+                "$ref": "#/components/schemas/CompanyUserUpdateDto"
               }
             }
           }
@@ -4285,6 +4285,29 @@
         },
         "additionalProperties": false
       },
+      "CompanyUserUpdateDto": {
+        "required": [
+          "userName",
+          "userType"
+        ],
+        "type": "object",
+        "properties": {
+          "userName": {
+            "maxLength": 100,
+            "minLength": 1,
+            "type": "string"
+          },
+          "userType": {
+            "maxLength": 20,
+            "minLength": 1,
+            "type": "string"
+          },
+          "isActive": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
       "ForgotPasswordDto": {
         "required": [
           "confirmNewPassword",
@@ -4566,6 +4589,7 @@
         "required": [
           "companyName",
           "confirmPassword",
+          "emailId",
           "password",
           "userName"
         ],
@@ -4580,6 +4604,12 @@
             "maxLength": 100,
             "minLength": 1,
             "type": "string"
+          },
+          "emailId": {
+            "maxLength": 250,
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
           },
           "password": {
             "minLength": 6,
